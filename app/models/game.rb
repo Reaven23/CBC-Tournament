@@ -47,6 +47,12 @@ class Game < ApplicationRecord
     game_start.strftime("%Hh%M")
   end
 
+  def game_datetime
+    return nil unless game_start? && tournament.start_date?
+    # Combine la date du tournoi avec l'heure du match
+    tournament.start_date.to_datetime + game_start.hour.hours + game_start.min.minutes
+  end
+
   def can_generate_next_phase?
     case game_type
     when 'pool'

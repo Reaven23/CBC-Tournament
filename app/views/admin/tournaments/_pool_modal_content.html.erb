@@ -14,12 +14,15 @@
                 <% if team.photo.attached? %>
                   <%= image_tag team.photo, alt: team.name, class: "team-photo-small me-2" %>
                 <% end %>
-                <span class="fw-bold"><%= team.name %></span>
+                <div>
+                  <div class="fw-bold"><%= team.name %></div>
+                  <div class="small text-muted">
+                    <span class="me-2">📊 <%= team.win_loss_record %></span>
+                    <span class="badge bg-primary">💯 <%= team.points %>pts</span>
+                  </div>
+                </div>
               </div>
               <div class="d-flex align-items-center">
-                <span class="badge me-2" style="background-color: <%= team.color %>; color: white; font-size: 0.7rem;">
-                  <%= team.color %>
-                </span>
                 <%= link_to remove_team_from_pool_admin_tournament_team_path(tournament, team), data: { turbo_method: :patch, turbo_frame: "pool_modal_#{pool.id}" }, class: "btn btn-sm btn-outline-danger", title: "Retirer" do %>
                   <i class="fas fa-times"></i>
                 <% end %>
@@ -49,12 +52,15 @@
                 <% if team.photo.attached? %>
                   <%= image_tag team.photo, alt: team.name, class: "team-photo-small me-2" %>
                 <% end %>
-                <span class="fw-bold"><%= team.name %></span>
+                <div>
+                  <div class="fw-bold"><%= team.name %></div>
+                  <div class="small text-muted">
+                    <span class="me-2">📊 <%= team.win_loss_record %></span>
+                    <span class="badge bg-primary">💯 <%= team.points %>pts</span>
+                  </div>
+                </div>
               </div>
               <div class="d-flex align-items-center">
-                <span class="badge me-2" style="background-color: <%= team.color %>; color: white; font-size: 0.7rem;">
-                  <%= team.color %>
-                </span>
                 <%= link_to assign_team_to_pool_admin_tournament_team_path(tournament, team, pool_id: pool.id), data: { turbo_method: :patch, turbo_frame: "pool_modal_#{pool.id}" }, class: "btn btn-sm btn-success", title: "Ajouter" do %>
                   <i class="fas fa-plus"></i>
                 <% end %>

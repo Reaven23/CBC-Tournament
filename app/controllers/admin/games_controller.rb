@@ -8,7 +8,17 @@ class Admin::GamesController < Admin::BaseController
   end
 
   def update
-    if @game.update(game_params)
+    # Traiter l'heure séparément
+    if params[:game][:game_start_time].present?
+      time_parts = params[:game][:game_start_time].split(':')
+      if time_parts.length == 2
+        # Créer un datetime avec la date du tournoi et l'heure saisie
+        game_datetime = @tournament.start_date.to_datetime + time_parts[0].to_i.hours + time_parts[1].to_i.minutes
+        @game.game_start = game_datetime
+      end
+    end
+
+    if @game.update(game_params.except(:game_start_time))
       respond_to do |format|
         format.html { redirect_to admin_tournament_path(@tournament), notice: 'Match mis à jour avec succès.' }
         format.turbo_stream {

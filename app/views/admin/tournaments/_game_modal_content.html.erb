@@ -9,9 +9,13 @@
           </div>
 
           <div class="mb-3">
-            <%= f.label :game_start, "Heure du match", class: "form-label" %>
-            <%= f.datetime_field :game_start, class: "form-control" %>
-            <div class="form-text">Format: JJ/MM/AAAA HH:MM</div>
+            <label for="game_start_time" class="form-label">Heure du match</label>
+            <input type="time"
+                   name="game[game_start_time]"
+                   id="game_start_time"
+                   value="<%= game.game_start&.strftime("%H:%M") %>"
+                   class="form-control" />
+            <div class="form-text">Date du tournoi: <%= tournament.start_date.strftime("%d/%m/%Y") %></div>
           </div>
 
           <%= f.input :court_number,
