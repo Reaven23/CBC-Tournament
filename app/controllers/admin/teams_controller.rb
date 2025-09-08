@@ -41,7 +41,14 @@ class Admin::TeamsController < Admin::BaseController
       respond_to do |format|
         format.html { redirect_to admin_tournament_path(@tournament), notice: "#{@team.name} assignée à #{pool.name}." }
         format.turbo_stream {
-          redirect_to admin_tournament_path(@tournament), notice: "#{@team.name} assignée à #{pool.name}."
+          # Recharger la poule avec ses équipes
+          pool.reload
+          pool = @tournament.pools.includes(teams: { photo_attachment: :blob }).find(pool.id)
+          @teams = @tournament.teams.includes(:pool, photo_attachment: :blob)
+          render turbo_stream: [
+            turbo_stream.replace("pool_modal_#{pool.id}", partial: "admin/tournaments/pool_modal_content", locals: { pool: pool, tournament: @tournament, teams: @teams }),
+            turbo_stream.replace("pool_card_#{pool.id}", partial: "admin/tournaments/pool_card", locals: { pool: pool, tournament: @tournament })
+          ]
         }
       end
     else
@@ -61,7 +68,14 @@ class Admin::TeamsController < Admin::BaseController
       respond_to do |format|
         format.html { redirect_to admin_tournament_path(@tournament), notice: "#{@team.name} retirée de #{pool_name}." }
         format.turbo_stream {
-          redirect_to admin_tournament_path(@tournament), notice: "#{@team.name} retirée de #{pool_name}."
+          # Recharger la poule avec ses équipes
+          pool.reload
+          pool = @tournament.pools.includes(teams: { photo_attachment: :blob }).find(pool.id)
+          @teams = @tournament.teams.includes(:pool, photo_attachment: :blob)
+          render turbo_stream: [
+            turbo_stream.replace("pool_modal_#{pool.id}", partial: "admin/tournaments/pool_modal_content", locals: { pool: pool, tournament: @tournament, teams: @teams }),
+            turbo_stream.replace("pool_card_#{pool.id}", partial: "admin/tournaments/pool_card", locals: { pool: pool, tournament: @tournament })
+          ]
         }
       end
     else
