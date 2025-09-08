@@ -19,15 +19,68 @@ class Team < ApplicationRecord
     Game.where("home_team_id = ? OR away_team_id = ?", id, id)
   end
 
+  def played_games
+    games.where(status: 'played')
+  end
+
   def total_games
-    games.count
+    played_games.count
   end
 
   def wins
-    won_games.count
+    won_games.where(status: 'played').count
   end
 
   def losses
     total_games - wins
+  end
+
+  def points
+    # 2 points pour une victoire, 1 point pour une défaite
+    (wins * 2) + (losses * 1)
+  end
+
+  def win_loss_record
+    "#{wins} - #{losses}"
+  end
+
+  # Méthodes pour le classement
+  def goals_scored
+    played_games.sum do |game|
+      if game.home_team_id == id
+        game.home_score || 0
+      else
+        game.away_score || 0
+      end
+    end
+  end
+
+  def goals_conceded
+    played_games.sum do |game|
+      if game.home_team_id == id
+        game.away_score || 0
+      else
+        game.home_score || 0
+      end
+    end
+  end
+
+  def goal_difference
+    goals_scored - goals_conceded
+  end
+
+  # Méthode pour vérifier la confrontation directe
+  def head_to_head_victory?(other_team)
+    direct_games = played_games.where(
+      "(home_team_id = ? AND away_team_id = ?) OR (home_team_id = ? AND away_team_id = ?)",
+      id, other_team.id, other_team.id, id
+    )
+
+    return false if direct_games.empty?
+
+    victories = direct_games.count { |game| game.winner_id == id }
+    defeats = direct_games.count { |game| game.winner_id == other_team.id }
+
+    victories > defeats
   end
 end

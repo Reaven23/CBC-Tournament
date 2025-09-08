@@ -24,6 +24,15 @@
       <% end %>
     </td>
     <td>
+      <% if game.played? && game.winner %>
+        <span class="badge bg-success"><%= game.winner.name %></span>
+      <% elsif game.played? %>
+        <span class="badge bg-secondary">Match nul</span>
+      <% else %>
+        <span class="text-muted">-</span>
+      <% end %>
+    </td>
+    <td>
       <% if game.referees.any? %>
         <% game.referees.each do |referee| %>
           <span class="badge bg-light text-dark me-1"><%= referee.name %></span>
@@ -69,6 +78,15 @@
     <td>
       <% if game.played? %>
         <strong><%= game.home_score %> - <%= game.away_score %></strong>
+      <% else %>
+        <span class="text-muted">-</span>
+      <% end %>
+    </td>
+    <td>
+      <% if game.played? && game.winner %>
+        <span class="badge bg-success"><%= game.winner.name %></span>
+      <% elsif game.played? %>
+        <span class="badge bg-secondary">Match nul</span>
       <% else %>
         <span class="text-muted">-</span>
       <% end %>
