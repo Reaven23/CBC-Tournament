@@ -17,7 +17,7 @@ class Game < ApplicationRecord
   validates :court_number, presence: true, if: :game_start?
 
   # Callbacks
-  after_update :calculate_winner, if: :saved_change_to_home_score? || :saved_change_to_away_score?
+  after_update :calculate_winner, if: -> { saved_change_to_home_score? || saved_change_to_away_score? }
 
   # Scopes
   scope :by_type, ->(game_type) { where(game_type: game_type) }
@@ -71,16 +71,22 @@ class Game < ApplicationRecord
   def calculate_winner
     return unless home_score.present? && away_score.present?
 
+    Rails.logger.info "Calculating winner for game #{id}: #{home_team.name} #{home_score} - #{away_score} #{away_team.name}"
+
     if home_score > away_score
       update_column(:winner_id, home_team_id)
+      Rails.logger.info "Winner: #{home_team.name}"
     elsif away_score > home_score
       update_column(:winner_id, away_team_id)
+      Rails.logger.info "Winner: #{away_team.name}"
     else
       # Match nul - pas de winner pour l'instant
       update_column(:winner_id, nil)
+      Rails.logger.info "Match nul - pas de winner"
     end
 
     # Marquer le match comme joué
     update_column(:status, 'played')
+    Rails.logger.info "Game #{id} marked as played"
   end
 end

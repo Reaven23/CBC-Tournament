@@ -36,6 +36,7 @@ class Pool < ApplicationRecord
     # 1. Nombre de points (2 pour victoire, 1 pour défaite)
     # 2. En cas d'égalité : confrontation directe
     # 3. Si 3+ équipes à égalité : goal average (différence de buts)
+    # 4. Si goal average identique : équipe qui a encaissé le moins de points
 
     teams.includes(:won_games).sort do |team_a, team_b|
       # 1. Comparaison par points
@@ -49,7 +50,11 @@ class Pool < ApplicationRecord
         1   # team_b gagne
       else
         # 3. Si pas de confrontation directe ou égalité : goal average
-        team_b.goal_difference - team_a.goal_difference
+        goal_diff = team_b.goal_difference - team_a.goal_difference
+        next goal_diff unless goal_diff == 0
+
+        # 4. Si goal average identique : équipe qui a encaissé le moins de points
+        team_a.goals_conceded - team_b.goals_conceded
       end
     end
   end
