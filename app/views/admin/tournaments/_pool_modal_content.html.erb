@@ -1,0 +1,73 @@
+<%= turbo_frame_tag "pool_modal_#{pool.id}" do %>
+  <!-- Équipes déjà assignées -->
+  <div class="mb-4">
+    <h6 class="text-primary">
+      <i class="fas fa-users me-2"></i>
+      Équipes assignées (<%= pool.teams.count %>)
+    </h6>
+    <% if pool.teams.any? %>
+      <div class="row">
+        <% pool.teams.each do |team| %>
+          <div class="col-md-6 mb-2">
+            <div class="d-flex justify-content-between align-items-center p-2 bg-light rounded">
+              <div class="d-flex align-items-center">
+                <% if team.photo.attached? %>
+                  <%= image_tag team.photo, alt: team.name, class: "team-photo-small me-2" %>
+                <% end %>
+                <span class="fw-bold"><%= team.name %></span>
+              </div>
+              <div class="d-flex align-items-center">
+                <span class="badge me-2" style="background-color: <%= team.color %>; color: white; font-size: 0.7rem;">
+                  <%= team.color %>
+                </span>
+                <%= link_to remove_team_from_pool_admin_tournament_team_path(tournament, team), data: { turbo_method: :patch, turbo_frame: "pool_modal_#{pool.id}" }, class: "btn btn-sm btn-outline-danger", title: "Retirer" do %>
+                  <i class="fas fa-times"></i>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <p class="text-muted">Aucune équipe assignée</p>
+    <% end %>
+  </div>
+
+  <!-- Équipes non assignées -->
+  <% unassigned_teams = teams.where(pool: nil) %>
+  <% if unassigned_teams.any? %>
+    <div class="mb-4">
+      <h6 class="text-warning">
+        <i class="fas fa-user-plus me-2"></i>
+        Ajouter des équipes (<%= unassigned_teams.count %> disponibles)
+      </h6>
+      <div class="row">
+        <% unassigned_teams.each do |team| %>
+          <div class="col-md-6 mb-2">
+            <div class="d-flex justify-content-between align-items-center p-2 border rounded">
+              <div class="d-flex align-items-center">
+                <% if team.photo.attached? %>
+                  <%= image_tag team.photo, alt: team.name, class: "team-photo-small me-2" %>
+                <% end %>
+                <span class="fw-bold"><%= team.name %></span>
+              </div>
+              <div class="d-flex align-items-center">
+                <span class="badge me-2" style="background-color: <%= team.color %>; color: white; font-size: 0.7rem;">
+                  <%= team.color %>
+                </span>
+                <%= link_to assign_team_to_pool_admin_tournament_team_path(tournament, team, pool_id: pool.id), data: { turbo_method: :patch, turbo_frame: "pool_modal_#{pool.id}" }, class: "btn btn-sm btn-success", title: "Ajouter" do %>
+                  <i class="fas fa-plus"></i>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% else %>
+    <div class="alert alert-info">
+      <i class="fas fa-info-circle me-2"></i>
+      Toutes les équipes sont déjà assignées à une poule.
+    </div>
+  <% end %>
+<% end %>

@@ -1,5 +1,6 @@
 class Team < ApplicationRecord
-  belongs_to :pool
+  belongs_to :pool, optional: true
+  belongs_to :tournament
 
   # Active Storage for team photo
   has_one_attached :photo
@@ -10,7 +11,7 @@ class Team < ApplicationRecord
   has_many :won_games, class_name: 'Game', foreign_key: 'winner_id', dependent: :nullify
 
   # Validations
-  validates :name, presence: true, uniqueness: { scope: :pool_id }
+  validates :name, presence: true, uniqueness: { scope: :tournament_id }
   validates :color, presence: true
 
   # Methods

@@ -1,0 +1,86 @@
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title">
+          <i class="fas fa-edit"></i>
+          Modifier le Tournoi
+        </h2>
+      </div>
+      <div class="card-body">
+        <%= form_with model: [:admin, @tournament], local: true, class: "tournament-form" do |form| %>
+          <% if @tournament.errors.any? %>
+            <div class="alert alert-danger">
+              <h4><%= pluralize(@tournament.errors.count, "erreur") %> empêche(nt) ce tournoi d'être sauvegardé :</h4>
+              <ul class="mb-0">
+                <% @tournament.errors.full_messages.each do |message| %>
+                  <li><%= message %></li>
+                <% end %>
+              </ul>
+            </div>
+          <% end %>
+
+          <div class="row">
+            <div class="col-md-8">
+              <div class="form-group mb-4">
+                <%= form.label :name, "Nom du tournoi", class: "form-label" %>
+                <%= form.text_field :name, class: "form-control", placeholder: "Ex: Tournoi de Basketball 2024", required: true %>
+                <small class="form-text text-muted">Le nom qui apparaîtra sur le site public</small>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="form-group mb-4">
+                <%= form.label :max_teams, "Nombre d'équipes", class: "form-label" %>
+                <%= form.number_field :max_teams, class: "form-control", min: 4, max: 32, required: true %>
+                <small class="form-text text-muted">Actuellement limité à 12 équipes</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group mb-4">
+            <%= form.label :description, "Description", class: "form-label" %>
+            <%= form.text_area :description, class: "form-control", rows: 4, placeholder: "Description du tournoi, règles spéciales, etc." %>
+            <small class="form-text text-muted">Optionnel - Description qui apparaîtra sur le site public</small>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group mb-4">
+                <%= form.label :start_date, "Date de début", class: "form-label" %>
+                <%= form.date_field :start_date, class: "form-control", required: true %>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="form-group mb-4">
+                <%= form.label :end_date, "Date de fin", class: "form-label" %>
+                <%= form.date_field :end_date, class: "form-control", required: true %>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group mb-4">
+            <div class="form-check">
+              <%= form.check_box :has_third_place, class: "form-check-input" %>
+              <%= form.label :has_third_place, "Inclure une petite finale (3ème place)", class: "form-check-label" %>
+            </div>
+            <small class="form-text text-muted">Si coché, un match pour la 3ème place sera automatiquement généré</small>
+          </div>
+
+          <div class="form-actions">
+            <%= form.submit "Mettre à jour", class: "btn btn-primary btn-lg" %>
+            <%= link_to admin_tournament_path(@tournament), class: "btn btn-secondary btn-lg ml-3" do %>
+              <i class="fas fa-eye"></i>
+              Voir le tournoi
+            <% end %>
+            <%= link_to admin_tournaments_path, class: "btn btn-outline-secondary btn-lg ml-2" do %>
+              <i class="fas fa-arrow-left"></i>
+              Retour à la liste
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,355 @@
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header">
+        <div class="d-flex justify-content-between align-items-center">
+          <h2 class="card-title">
+            <i class="fas fa-trophy"></i>
+            <%= @tournament.name %>
+          </h2>
+          <div>
+            <%= link_to edit_admin_tournament_path(@tournament), class: "btn btn-secondary" do %>
+              <i class="fas fa-edit"></i>
+              Modifier
+            <% end %>
+            <%= link_to admin_tournaments_path, class: "btn btn-outline-secondary" do %>
+              <i class="fas fa-arrow-left"></i>
+              Retour
+            <% end %>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="row mb-4">
+          <div class="col-md-8">
+            <h4>Informations du tournoi</h4>
+            <p><strong>Description :</strong> <%= @tournament.description.present? ? @tournament.description : "Aucune description" %></p>
+            <p><strong>Dates :</strong> <%= @tournament.start_date&.strftime("%d/%m/%Y") %> - <%= @tournament.end_date&.strftime("%d/%m/%Y") %></p>
+            <p><strong>Statut :</strong>
+              <% case @tournament.status %>
+              <% when 'draft' %>
+                <span class="badge badge-secondary">Brouillon</span>
+              <% when 'active' %>
+                <span class="badge badge-success">Actif</span>
+              <% when 'completed' %>
+                <span class="badge badge-info">Terminé</span>
+              <% end %>
+            </p>
+            <p><strong>Équipes :</strong> <%= @teams.count %> / <%= @tournament.max_teams %></p>
+            <p><strong>Équipes non assignées :</strong> <%= 12 - @teams.count %></p>
+            <p><strong>Petite finale :</strong> <%= @tournament.has_third_place? ? "Oui" : "Non" %></p>
+          </div>
+          <div class="col-md-4">
+            <h4>Actions rapides</h4>
+            <% if @teams.count < @tournament.max_teams %>
+              <div class="d-grid mb-2">
+                <%= link_to "#", class: "btn btn-primary", data: { bs_toggle: "modal", bs_target: "#addTeamModal" } do %>
+                  <i class="fas fa-plus"></i>
+                  Ajouter une équipe
+                <% end %>
+              </div>
+            <% end %>
+
+            <% if @tournament.pools.empty? %>
+              <div class="d-grid mb-2">
+                <%= link_to "#", class: "btn btn-success", data: { bs_toggle: "modal", bs_target: "#createPoolsModal" } do %>
+                  <i class="fas fa-layer-group"></i>
+                  Créer les poules
+                <% end %>
+              </div>
+            <% end %>
+
+            <% if @tournament.pools.any? && @teams.where(pool: nil).any? %>
+              <div class="d-grid mb-2">
+                <button class="btn btn-info" onclick="toggleTeamAssignment()">
+                  <i class="fas fa-users"></i>
+                  Assigner les équipes
+                </button>
+              </div>
+            <% end %>
+
+            <% if @tournament.can_generate_pool_games? %>
+              <div class="d-grid mb-2">
+                <%= link_to "#", class: "btn btn-warning", data: { bs_toggle: "modal", bs_target: "#generatePoolGamesModal" } do %>
+                  <i class="fas fa-play"></i>
+                  Générer les matchs de poule
+                <% end %>
+              </div>
+            <% end %>
+
+            <% if @tournament.can_generate_quarters? %>
+              <div class="d-grid mb-2">
+                <%= link_to generate_quarters_admin_tournament_path(@tournament), method: :patch, class: "btn btn-warning" do %>
+                  <i class="fas fa-play"></i>
+                  Générer les quarts
+                <% end %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+
+        <!-- Pools Section -->
+        <% if @pools.any? %>
+          <div class="row mb-4">
+            <div class="col-12">
+              <h4>Poules</h4>
+            </div>
+          </div>
+
+          <div class="row">
+            <% @pools.each do |pool| %>
+              <%= render partial: "pool_card", locals: { pool: pool, tournament: @tournament } %>
+            <% end %>
+          </div>
+        <% end %>
+
+
+        <!-- Teams Section -->
+        <% if @teams.any? %>
+          <div class="row">
+            <div class="col-12">
+              <h4>Équipes (<%= @teams.count %>)</h4>
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Nom</th>
+                      <th>Poule</th>
+                      <th>Couleur</th>
+                      <th>Photo</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% @teams.each do |team| %>
+                      <tr>
+                        <td><strong><%= team.name %></strong></td>
+                        <td><%= team.pool&.name || "Non assignée" %></td>
+                        <td>
+                          <span class="badge" style="background-color: <%= team.color %>; color: white;">
+                            <%= team.color %>
+                          </span>
+                        </td>
+                        <td>
+                          <% if team.photo.attached? %>
+                            <img src="<%= url_for(team.photo) %>" alt="<%= team.name %>" class="team-photo">
+                          <% else %>
+                            <div class="team-photo bg-light d-flex align-items-center justify-content-center">
+                              <i class="fas fa-user text-muted"></i>
+                            </div>
+                          <% end %>
+                        </td>
+                        <td>
+                          <% if @tournament.pools.any? %>
+                            <% if team.pool.nil? %>
+                              <%= link_to "#", class: "btn btn-sm btn-outline-success", data: { bs_toggle: "modal", bs_target: "#assignTeamModal#{team.id}" } do %>
+                                <i class="fas fa-plus"></i>
+                                Assigner
+                              <% end %>
+                            <% else %>
+                              <span class="badge bg-success"><%= team.pool.name %></span>
+                            <% end %>
+                          <% end %>
+                          <%= link_to edit_admin_tournament_team_path(@tournament, team), class: "btn btn-sm btn-outline-primary", title: "Modifier l'équipe" do %>
+                            <i class="fas fa-edit"></i>
+                          <% end %>
+                          <%= link_to admin_tournament_team_path(@tournament, team), class: "btn btn-sm btn-outline-danger", data: { turbo_method: :delete, confirm: "Êtes-vous sûr ?" } do %>
+                            <i class="fas fa-trash"></i>
+                          <% end %>
+                        </td>
+                      </tr>
+                    <% end %>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        <% else %>
+          <div class="text-center py-4">
+            <i class="fas fa-users fa-3x text-muted mb-3"></i>
+            <h4 class="text-muted">Aucune équipe</h4>
+            <p class="text-muted">Commencez par ajouter des équipes à votre tournoi</p>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTeamModal">
+              <i class="fas fa-plus"></i>
+              Ajouter la première équipe
+            </button>
+          </div>
+        <% end %>
+
+        <!-- Games Section -->
+        <% if @games.any? %>
+          <div class="row">
+            <div class="col-12">
+              <h4>Matchs</h4>
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Type</th>
+                      <th>Match</th>
+                      <th>Statut</th>
+                      <th>Score</th>
+                      <th>Date</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% @games.each do |game| %>
+                      <tr>
+                        <td>
+                          <% case game.type %>
+                          <% when 'pool' %>
+                            <span class="badge badge-info">Poule</span>
+                          <% when 'quarter' %>
+                            <span class="badge badge-warning">Quart</span>
+                          <% when 'semi' %>
+                            <span class="badge badge-success">Demi</span>
+                          <% when 'final' %>
+                            <span class="badge badge-primary">Finale</span>
+                          <% end %>
+                        </td>
+                        <td>
+                          <strong><%= game.home_team.name %></strong> vs <strong><%= game.away_team.name %></strong>
+                        </td>
+                        <td>
+                          <% if game.played? %>
+                            <span class="badge badge-success">Joué</span>
+                          <% else %>
+                            <span class="badge badge-secondary">Programmé</span>
+                          <% end %>
+                        </td>
+                        <td>
+                          <% if game.played? %>
+                            <strong><%= game.home_score %> - <%= game.away_score %></strong>
+                          <% else %>
+                            <span class="text-muted">-</span>
+                          <% end %>
+                        </td>
+                        <td><%= game.scheduled_at&.strftime("%d/%m %H:%M") %></td>
+                        <td>
+                          <%= link_to "#", class: "btn btn-sm btn-outline-primary" do %>
+                            <i class="fas fa-eye"></i>
+                          <% end %>
+                        </td>
+                      </tr>
+                    <% end %>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal pour ajouter une équipe -->
+<div class="modal fade" id="addTeamModal" tabindex="-1" aria-labelledby="addTeamModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addTeamModalLabel">Ajouter une équipe</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+        <%= simple_form_for :team, url: admin_tournament_teams_path(@tournament), method: :post, local: true, html: { multipart: true } do |f| %>
+          <div class="modal-body">
+            <%= f.input :name, label: "Nom de l'équipe", required: true, input_html: { class: "form-control" } %>
+            <%= f.input :color, label: "Couleur du maillot", as: :color, input_html: { class: "form-control", value: "#FF6B35" } %>
+            <%= f.input :photo, label: "Photo de l'équipe", as: :file, input_html: { class: "form-control", accept: "image/*" }, hint: "Formats acceptés : JPG, PNG, GIF (max 5MB)" %>
+            <%= f.input :description, label: "Description", as: :text, input_html: { class: "form-control", rows: 3 } %>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+            <%= f.submit "Ajouter l'équipe", class: "btn btn-primary" %>
+          </div>
+        <% end %>
+    </div>
+  </div>
+</div>
+
+<!-- Modal pour créer les poules -->
+<div class="modal fade" id="createPoolsModal" tabindex="-1" aria-labelledby="createPoolsModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="createPoolsModalLabel">Créer les poules</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Cette action va créer 3 poules vides.</p>
+        <p><strong>Attention :</strong> Cette action ne peut pas être annulée.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+        <%= simple_form_for :tournament, url: create_pools_admin_tournament_path(@tournament), method: :post, local: true, html: { class: "d-inline" } do |f| %>
+          <%= f.submit "Créer les poules", class: "btn btn-success" %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+function toggleTeamAssignment() {
+  const section = document.getElementById('unassigned-teams');
+  if (section.style.display === 'none') {
+    section.style.display = 'block';
+  } else {
+    section.style.display = 'none';
+  }
+}
+</script>
+
+<!-- Modal pour générer les matchs de poule -->
+<div class="modal fade" id="generatePoolGamesModal" tabindex="-1" aria-labelledby="generatePoolGamesModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="generatePoolGamesModalLabel">Générer les matchs de poule</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Cette action va générer tous les matchs de poule pour les équipes assignées.</p>
+        <p><strong>Attention :</strong> Cette action ne peut pas être annulée.</p>
+
+        <div class="mt-3">
+          <h6>Répartition actuelle :</h6>
+          <% @pools.each do |pool| %>
+            <p><strong><%= pool.name %>:</strong> <%= pool.teams.count %> équipes</p>
+          <% end %>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+        <%= simple_form_for :tournament, url: generate_pool_games_admin_tournament_path(@tournament), method: :patch, local: true, html: { class: "d-inline" } do |f| %>
+          <%= f.submit "Générer les matchs", class: "btn btn-warning" %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Pool Management Modals -->
+<% @pools.each do |pool| %>
+<div class="modal fade" id="poolModal<%= pool.id %>" tabindex="-1" aria-labelledby="poolModalLabel<%= pool.id %>" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="poolModalLabel<%= pool.id %>">
+          <i class="fas fa-layer-group me-2"></i>
+          Gérer <%= pool.name %>
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <%= render partial: "pool_modal_content", locals: { pool: pool, tournament: @tournament, teams: @teams } %>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+      </div>
+    </div>
+  </div>
+</div>
+<% end %>

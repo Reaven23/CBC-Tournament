@@ -10,7 +10,7 @@ class Game < ApplicationRecord
   has_many :referees, through: :game_referees
 
   # Validations
-  validates :type, inclusion: { in: %w[pool quarter semi final third_place] }
+  validates :game_type, inclusion: { in: %w[pool quarter semi final third_place] }
   validates :status, inclusion: { in: %w[scheduled played] }
   validates :home_score, :away_score, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
   validates :round_number, presence: true, numericality: { greater_than: 0 }
@@ -19,10 +19,10 @@ class Game < ApplicationRecord
   after_update :calculate_winner, if: :saved_change_to_home_score? || :saved_change_to_away_score?
 
   # Scopes
-  scope :by_type, ->(game_type) { where(type: game_type) }
+  scope :by_type, ->(game_type) { where(game_type: game_type) }
   scope :by_status, ->(game_status) { where(status: game_status) }
-  scope :pool_games, -> { where(type: 'pool') }
-  scope :knockout_games, -> { where(type: %w[quarter semi final third_place]) }
+  scope :pool_games, -> { where(game_type: 'pool') }
+  scope :knockout_games, -> { where(game_type: %w[quarter semi final third_place]) }
 
   # Methods
   def played?
@@ -34,15 +34,15 @@ class Game < ApplicationRecord
   end
 
   def pool_game?
-    type == 'pool'
+    game_type == 'pool'
   end
 
   def knockout_game?
-    %w[quarter semi final third_place].include?(type)
+    %w[quarter semi final third_place].include?(game_type)
   end
 
   def can_generate_next_phase?
-    case type
+    case game_type
     when 'pool'
       tournament.pool_games.all?(&:played?)
     when 'quarter'

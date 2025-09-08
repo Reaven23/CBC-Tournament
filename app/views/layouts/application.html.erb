@@ -1,16 +1,111 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
   <head>
-    <title>CbcTournament</title>
+    <title>CBC Tournament - Gestion de tournois de basketball</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
+
+    <!-- Font Awesome pour les icônes -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   </head>
 
   <body>
-    <%= yield %>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+      <div class="container">
+        <%= link_to root_path, class: "navbar-brand" do %>
+          <i class="fas fa-basketball-ball me-2"></i>
+          <strong>CBC Tournament</strong>
+        <% end %>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav me-auto">
+            <li class="nav-item">
+              <%= link_to "Accueil", root_path, class: "nav-link #{'active' if current_page?(root_path)}" %>
+            </li>
+            <li class="nav-item">
+              <%= link_to "Tournois", tournaments_path, class: "nav-link" %>
+            </li>
+          </ul>
+
+          <ul class="navbar-nav">
+            <% if user_signed_in? %>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="fas fa-user-circle me-1"></i>
+                  <%= current_user.full_name %>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end">
+                  <% if current_user.super_admin? || current_user.organizer? %>
+                    <li>
+                      <%= link_to admin_root_path, class: "dropdown-item" do %>
+                        <i class="fas fa-tachometer-alt me-2"></i>
+                        Dashboard Admin
+                      <% end %>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+                  <% end %>
+                  <li>
+                    <%= link_to destroy_user_session_path, method: :delete, class: "dropdown-item" do %>
+                      <i class="fas fa-sign-out-alt me-2"></i>
+                      Déconnexion
+                    <% end %>
+                  </li>
+                </ul>
+              </li>
+            <% else %>
+              <li class="nav-item">
+                <%= link_to "Connexion", new_user_session_path, class: "nav-link" %>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    <% if notice %>
+      <div class="alert alert-success alert-dismissible fade show m-0" role="alert">
+        <i class="fas fa-check-circle me-2"></i>
+        <%= notice %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    <% end %>
+
+    <% if alert %>
+      <div class="alert alert-danger alert-dismissible fade show m-0" role="alert">
+        <i class="fas fa-exclamation-circle me-2"></i>
+        <%= alert %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    <% end %>
+
+    <!-- Main Content -->
+    <main>
+      <%= yield %>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light py-4 mt-5">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-6">
+            <h5><i class="fas fa-basketball-ball me-2"></i>CBC Tournament</h5>
+            <p class="mb-0">Gestion de tournois de basketball moderne et intuitive.</p>
+          </div>
+          <div class="col-md-6 text-md-end">
+            <p class="mb-0">&copy; <%= Date.current.year %> CBC Tournament. Tous droits réservés.</p>
+          </div>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

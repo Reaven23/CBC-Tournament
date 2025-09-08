@@ -1,1 +1,82 @@
 // Specific CSS for your home-page
+
+// Basketball theme customizations for home page
+:root {
+  --bs-primary: #004E89;
+  --bs-primary-rgb: 0, 78, 137;
+  --bs-warning: #FF6B35;
+  --bs-warning-rgb: 255, 107, 53;
+}
+
+// Custom gradient background
+.bg-gradient-primary {
+  background: linear-gradient(135deg, var(--bs-primary) 0%, #002A4A 100%);
+}
+
+// Hero section improvements
+.hero-section {
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+}
+
+// Custom button styles
+.btn-warning {
+  --bs-btn-color: #000;
+  --bs-btn-bg: var(--bs-warning);
+  --bs-btn-border-color: var(--bs-warning);
+  --bs-btn-hover-color: #000;
+  --bs-btn-hover-bg: #e55a2b;
+  --bs-btn-hover-border-color: #e55a2b;
+  --bs-btn-focus-shadow-rgb: 255, 107, 53;
+  --bs-btn-active-color: #000;
+  --bs-btn-active-bg: #e55a2b;
+  --bs-btn-active-border-color: #e55a2b;
+}
+
+// Card hover effects
+.card {
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+// Basketball icon animation
+.fa-basketball-ball {
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
+}
+
+// Responsive improvements
+@media (max-width: 768px) {
+  .hero-section {
+    min-height: 50vh;
+    text-align: center;
+  }
+
+  .display-4 {
+    font-size: 2.5rem;
+  }
+
+  .display-5 {
+    font-size: 2rem;
+  }
+
+  .display-6 {
+    font-size: 1.75rem;
+  }
+}

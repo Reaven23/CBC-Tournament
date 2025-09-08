@@ -1,2 +1,216 @@
-<h1>Pages#home</h1>
-<p>Find me in app/views/pages/home.html.erb</p>
+<!-- Hero Section -->
+<section class="hero-section bg-gradient-primary text-white py-5">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-6">
+        <h1 class="display-4 fw-bold mb-4">
+          <i class="fas fa-basketball-ball text-warning me-3"></i>
+          CBC Tournament
+        </h1>
+        <p class="lead mb-4">
+          Gestion moderne et intuitive de tournois de basketball.
+          Suivez vos tournois en temps réel et consultez les résultats.
+        </p>
+        <div class="d-flex flex-wrap gap-3">
+          <%= link_to tournaments_path, class: "btn btn-warning btn-lg" do %>
+            <i class="fas fa-trophy me-2"></i>
+            Voir les tournois
+          <% end %>
+          <% unless user_signed_in? %>
+            <%= link_to new_user_session_path, class: "btn btn-outline-light btn-lg" do %>
+              <i class="fas fa-sign-in-alt me-2"></i>
+              Se connecter
+            <% end %>
+          <% else %>
+            <% if current_user.super_admin? || current_user.organizer? %>
+              <%= link_to admin_root_path, class: "btn btn-outline-light btn-lg" do %>
+                <i class="fas fa-tachometer-alt me-2"></i>
+                Dashboard Admin
+              <% end %>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+      <div class="col-lg-6 text-center">
+        <i class="fas fa-basketball-ball display-1 text-warning opacity-75"></i>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5">
+  <div class="container">
+    <div class="row text-center mb-5">
+      <div class="col-12">
+        <h2 class="display-5 fw-bold mb-3">Fonctionnalités</h2>
+        <p class="lead text-muted">Tout ce dont vous avez besoin pour organiser un tournoi parfait</p>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="card h-100 border-0 shadow-sm">
+          <div class="card-body text-center p-4">
+            <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+              <i class="fas fa-users text-primary fs-2"></i>
+            </div>
+            <h5 class="card-title">Suivi des équipes</h5>
+            <p class="card-text text-muted">
+              Consultez les équipes organisées en poules et suivez leurs performances en temps réel.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card h-100 border-0 shadow-sm">
+          <div class="card-body text-center p-4">
+            <div class="bg-success bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+              <i class="fas fa-calendar-alt text-success fs-2"></i>
+            </div>
+            <h5 class="card-title">Planning en temps réel</h5>
+            <p class="card-text text-muted">
+              Consultez les matchs programmés et les phases finales avec mise à jour automatique.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card h-100 border-0 shadow-sm">
+          <div class="card-body text-center p-4">
+            <div class="bg-warning bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+              <i class="fas fa-mobile-alt text-warning fs-2"></i>
+            </div>
+            <h5 class="card-title">Mobile First</h5>
+            <p class="card-text text-muted">
+              Interface optimisée pour mobile, parfaite pour consulter les résultats sur le terrain.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Recent Tournaments Section -->
+<section class="bg-light py-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <h2 class="display-6 fw-bold mb-4 text-center">Tournois récents</h2>
+        <div class="row g-4">
+          <!-- Placeholder pour les tournois récents -->
+          <div class="col-md-6 col-lg-4">
+            <div class="card border-0 shadow-sm">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                  <h5 class="card-title mb-0">Tournoi d'été 2024</h5>
+                  <span class="badge bg-success">Actif</span>
+                </div>
+                <p class="card-text text-muted small">
+                  <i class="fas fa-calendar me-1"></i>
+                  15-17 Juillet 2024
+                </p>
+                <p class="card-text text-muted small">
+                  <i class="fas fa-users me-1"></i>
+                  12 équipes • 3 poules
+                </p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <small class="text-muted">Phase de poules</small>
+                  <span class="badge bg-primary">6/18 matchs</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6 col-lg-4">
+            <div class="card border-0 shadow-sm">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                  <h5 class="card-title mb-0">Championnat Printemps</h5>
+                  <span class="badge bg-info">Terminé</span>
+                </div>
+                <p class="card-text text-muted small">
+                  <i class="fas fa-calendar me-1"></i>
+                  20-22 Avril 2024
+                </p>
+                <p class="card-text text-muted small">
+                  <i class="fas fa-users me-1"></i>
+                  12 équipes • 3 poules
+                </p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <small class="text-muted">Finale jouée</small>
+                  <span class="badge bg-success">18/18 matchs</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6 col-lg-4">
+            <div class="card border-0 shadow-sm">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                  <h5 class="card-title mb-0">Tournoi Jeunes</h5>
+                  <span class="badge bg-secondary">Brouillon</span>
+                </div>
+                <p class="card-text text-muted small">
+                  <i class="fas fa-calendar me-1"></i>
+                  10-12 Août 2024
+                </p>
+                <p class="card-text text-muted small">
+                  <i class="fas fa-users me-1"></i>
+                  8 équipes • 2 poules
+                </p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <small class="text-muted">En préparation</small>
+                  <span class="badge bg-secondary">0/12 matchs</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-center mt-4">
+          <%= link_to tournaments_path, class: "btn btn-outline-primary" do %>
+            <i class="fas fa-eye me-2"></i>
+            Voir tous les tournois
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-5 bg-primary text-white">
+  <div class="container text-center">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <h2 class="display-6 fw-bold mb-4">Suivez vos tournois en temps réel</h2>
+        <p class="lead mb-4">
+          Consultez les résultats, classements et prochains matchs de tous les tournois.
+        </p>
+        <% if user_signed_in? %>
+          <% if current_user.super_admin? || current_user.organizer? %>
+            <%= link_to admin_root_path, class: "btn btn-warning btn-lg" do %>
+              <i class="fas fa-tachometer-alt me-2"></i>
+              Accéder au Dashboard
+            <% end %>
+          <% else %>
+            <%= link_to tournaments_path, class: "btn btn-warning btn-lg" do %>
+              <i class="fas fa-trophy me-2"></i>
+              Voir les tournois
+            <% end %>
+          <% end %>
+        <% else %>
+          <%= link_to tournaments_path, class: "btn btn-warning btn-lg" do %>
+            <i class="fas fa-eye me-2"></i>
+            Consulter les tournois
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</section>

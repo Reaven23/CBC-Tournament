@@ -1,12 +1,35 @@
 Rails.application.routes.draw do
-  devise_for :users
+  devise_for :users, skip: [:registrations]
+
   root to: "pages#home"
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
+
+  # Admin routes
+  namespace :admin do
+    root to: "dashboard#index"
+    resources :tournaments do
+      member do
+        patch :generate_quarters
+        patch :generate_semis
+        patch :generate_finals
+        post :create_pools
+        patch :generate_pool_games
+      end
+      resources :teams, only: [:create, :edit, :update, :destroy] do
+        member do
+          patch :assign_team_to_pool
+          patch :remove_team_from_pool
+          delete :remove_photo
+        end
+      end
+    end
+  end
+
+  # Public tournament routes
+  resources :tournaments, only: [:index, :show] do
+    resources :games, only: [:show]
+  end
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.
   get "up" => "rails/health#show", as: :rails_health_check
-
-  # Defines the root path route ("/")
-  # root "posts#index"
 end
