@@ -1,0 +1,135 @@
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header">
+        <div class="d-flex justify-content-between align-items-center">
+          <h2 class="card-title">
+            <i class="fas fa-trophy"></i>
+            Gestion des Tournois
+          </h2>
+          <%= link_to new_admin_tournament_path, class: "btn btn-primary" do %>
+            <i class="fas fa-plus"></i>
+            Nouveau Tournoi
+          <% end %>
+        </div>
+      </div>
+      <div class="card-body">
+        <% if @tournaments.any? %>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Nom</th>
+                  <th>Description</th>
+                  <th>Statut</th>
+                  <th>Dates</th>
+                  <th>Équipes</th>
+                  <% if current_user.super_admin? %>
+                    <th>Organisateur</th>
+                  <% end %>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @tournaments.each do |tournament| %>
+                  <tr>
+                    <td>
+                      <strong><%= tournament.name %></strong>
+                    </td>
+                    <td>
+                      <% if tournament.description.present? %>
+                        <%= truncate(tournament.description, length: 60) %>
+                      <% else %>
+                        <span class="text-muted">Aucune description</span>
+                      <% end %>
+                    </td>
+                    <td>
+                      <% case tournament.status %>
+                      <% when 'draft' %>
+                        <span class="badge badge-secondary">Brouillon</span>
+                      <% when 'active' %>
+                        <span class="badge badge-success">Actif</span>
+                      <% when 'completed' %>
+                        <span class="badge badge-info">Terminé</span>
+                      <% end %>
+                    </td>
+                    <td>
+                      <div class="small">
+                        <div><strong>Début:</strong> <%= tournament.start_date&.strftime("%d/%m/%Y") %></div>
+                        <div><strong>Fin:</strong> <%= tournament.end_date&.strftime("%d/%m/%Y") %></div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <span class="badge badge-info mr-2"><%= tournament.teams.count %></span>
+                        <span class="text-muted">/ <%= tournament.max_teams %></span>
+                      </div>
+                      <% if tournament.pools.any? %>
+                        <div class="small text-muted">
+                          <%= pluralize(tournament.pools.count, 'poule') %>
+                        </div>
+                      <% end %>
+                    </td>
+                    <% if current_user.super_admin? %>
+                      <td>
+                        <div class="d-flex align-items-center">
+                          <i class="fas fa-user-circle text-primary mr-2"></i>
+                          <%= tournament.user.full_name %>
+                        </div>
+                        <div class="small text-muted">
+                          <%= tournament.user.email %>
+                        </div>
+                      </td>
+                    <% end %>
+                    <td>
+                      <div class="btn-group" role="group">
+                        <%= link_to admin_tournament_path(tournament),
+                            class: "btn btn-sm btn-outline-primary",
+                            title: "Voir les détails" do %>
+                          <i class="fas fa-eye"></i>
+                        <% end %>
+                        <%= link_to edit_admin_tournament_path(tournament),
+                            class: "btn btn-sm btn-outline-secondary",
+                            title: "Modifier" do %>
+                          <i class="fas fa-edit"></i>
+                        <% end %>
+                        <%= link_to admin_tournament_path(tournament),
+                            method: :delete,
+                            class: "btn btn-sm btn-outline-danger",
+                            title: "Supprimer",
+                            data: {
+                              confirm: "Êtes-vous sûr de vouloir supprimer ce tournoi ?",
+                              turbo_method: :delete
+                            } do %>
+                          <i class="fas fa-trash"></i>
+                        <% end %>
+                      </div>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        <% else %>
+          <div class="text-center py-5">
+            <i class="fas fa-trophy fa-4x text-muted mb-4"></i>
+            <h3 class="text-muted">Aucun tournoi</h3>
+            <p class="text-muted mb-4">
+              <% if current_user.super_admin? %>
+                Commencez par créer votre premier tournoi ou assignez-en un à un organisateur.
+              <% else %>
+                Aucun tournoi ne vous a été assigné pour le moment.
+              <% end %>
+            </p>
+            <% if current_user.super_admin? %>
+              <%= link_to new_admin_tournament_path, class: "btn btn-primary btn-lg" do %>
+                <i class="fas fa-plus"></i>
+                Créer un tournoi
+              <% end %>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

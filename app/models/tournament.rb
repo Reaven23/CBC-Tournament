@@ -3,7 +3,8 @@ class Tournament < ApplicationRecord
 
   # Associations
   has_many :pools, dependent: :destroy
-  has_many :teams, through: :pools
+  has_many :teams, dependent: :destroy
+  has_many :pool_teams, through: :pools, source: :teams
   has_many :games, dependent: :destroy
   has_many :referees, dependent: :destroy
 
@@ -58,6 +59,48 @@ class Tournament < ApplicationRecord
 
   def generate_third_place
     # Logique à implémenter
+  end
+
+  def create_pools_and_distribute_teams
+    return false if pools.any?
+
+    # Créer 3 poules vides
+    pools.create!(name: "Poule A", position: 1)
+    pools.create!(name: "Poule B", position: 2)
+    pools.create!(name: "Poule C", position: 3)
+
+    true
+  end
+
+  def generate_pool_games
+    pools.each do |pool|
+      teams_in_pool = pool.teams.to_a
+
+      # Générer tous les matchs possibles dans la poule
+      teams_in_pool.combination(2).each_with_index do |(team1, team2), index|
+        games.create!(
+          pool: pool,
+          home_team: team1,
+          away_team: team2,
+          game_type: 'pool',
+          round_number: (index / 2) + 1,
+          status: 'scheduled'
+        )
+      end
+    end
+  end
+
+  def can_generate_pool_games?
+    pools.any? && pools.all? { |pool| pool.teams.count >= 2 } && games.where(game_type: 'pool').empty?
+  end
+
+  def generate_pool_games_if_ready
+    if can_generate_pool_games?
+      generate_pool_games
+      true
+    else
+      false
+    end
   end
 
   private

@@ -1,0 +1,58 @@
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header">
+        <div class="d-flex justify-content-between align-items-center">
+          <h2 class="card-title">
+            <i class="fas fa-edit"></i>
+            Modifier l'équipe
+          </h2>
+          <%= link_to admin_tournament_path(@tournament), class: "btn btn-outline-secondary" do %>
+            <i class="fas fa-arrow-left"></i>
+            Retour au tournoi
+          <% end %>
+        </div>
+      </div>
+      <div class="card-body">
+        <%= simple_form_for [:admin, @tournament, @team], local: true, html: { multipart: true, class: "team-form" } do |f| %>
+          <div class="row">
+            <div class="col-md-8">
+              <%= f.input :name, label: "Nom de l'équipe", required: true, input_html: { class: "form-control" } %>
+            </div>
+            <div class="col-md-4">
+              <%= f.input :color, label: "Couleur du maillot", as: :color, input_html: { class: "form-control" } %>
+            </div>
+          </div>
+
+          <%= f.input :photo, label: "Photo de l'équipe", as: :file, input_html: { class: "form-control", accept: "image/*" }, hint: "Formats acceptés : JPG, PNG, GIF (max 5MB)" %>
+
+          <% if @team.photo.attached? %>
+            <div class="file-preview mt-3">
+              <p class="text-muted mb-2">Photo actuelle :</p>
+              <%= image_tag @team.photo, alt: @team.name, class: "team-photo" %>
+              <div class="mt-2">
+                <%= link_to remove_photo_admin_tournament_team_path(@tournament, @team), method: :delete, class: "btn btn-sm btn-outline-danger", data: { confirm: "Supprimer cette photo ?" } do %>
+                  <i class="fas fa-trash"></i>
+                  Supprimer la photo
+                <% end %>
+              </div>
+              <p class="text-muted mt-2">
+                <small>Pour changer la photo, sélectionnez un nouveau fichier ci-dessus</small>
+              </p>
+            </div>
+          <% end %>
+
+          <%= f.input :description, label: "Description", as: :text, input_html: { class: "form-control", rows: 4 } %>
+
+          <div class="form-actions">
+            <%= f.submit "Mettre à jour l'équipe", class: "btn btn-primary btn-lg" %>
+            <%= link_to admin_tournament_path(@tournament), class: "btn btn-secondary btn-lg ml-3" do %>
+              <i class="fas fa-times"></i>
+              Annuler
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

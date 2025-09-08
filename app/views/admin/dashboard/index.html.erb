@@ -1,0 +1,250 @@
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title">
+          <i class="fas fa-tachometer-alt"></i>
+          Dashboard
+        </h2>
+      </div>
+      <div class="card-body">
+        <p class="lead">Bienvenue dans l'administration des tournois CBC</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Statistiques -->
+<div class="row">
+  <div class="col-md-3 col-sm-6 mb-4">
+    <div class="card text-center">
+      <div class="card-body">
+        <div class="text-primary mb-2">
+          <i class="fas fa-trophy fa-2x"></i>
+        </div>
+        <h3 class="card-title text-primary"><%= @stats[:total_tournaments] %></h3>
+        <p class="card-text text-muted">Tournois</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-3 col-sm-6 mb-4">
+    <div class="card text-center">
+      <div class="card-body">
+        <div class="text-success mb-2">
+          <i class="fas fa-play-circle fa-2x"></i>
+        </div>
+        <h3 class="card-title text-success"><%= @stats[:active_tournaments] %></h3>
+        <p class="card-text text-muted">Actifs</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-3 col-sm-6 mb-4">
+    <div class="card text-center">
+      <div class="card-body">
+        <div class="text-info mb-2">
+          <i class="fas fa-basketball-ball fa-2x"></i>
+        </div>
+        <h3 class="card-title text-info"><%= @stats[:total_games] %></h3>
+        <p class="card-text text-muted">Matchs</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-3 col-sm-6 mb-4">
+    <div class="card text-center">
+      <div class="card-body">
+        <div class="text-warning mb-2">
+          <i class="fas fa-check-circle fa-2x"></i>
+        </div>
+        <h3 class="card-title text-warning"><%= @stats[:completed_games] %></h3>
+        <p class="card-text text-muted">Terminés</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Actions rapides -->
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">
+          <i class="fas fa-bolt"></i>
+          Actions rapides
+        </h3>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <%= link_to new_admin_tournament_path, class: "btn btn-primary btn-lg w-100" do %>
+              <i class="fas fa-plus"></i>
+              Nouveau Tournoi
+            <% end %>
+          </div>
+          <div class="col-md-4 mb-3">
+            <%= link_to admin_tournaments_path, class: "btn btn-secondary btn-lg w-100" do %>
+              <i class="fas fa-list"></i>
+              Voir tous les tournois
+            <% end %>
+          </div>
+          <div class="col-md-4 mb-3">
+            <%= link_to root_path, class: "btn btn-info btn-lg w-100" do %>
+              <i class="fas fa-eye"></i>
+              Voir le site public
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Tournois récents -->
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">
+          <i class="fas fa-clock"></i>
+          Tournois récents
+        </h3>
+      </div>
+      <div class="card-body">
+        <% if @tournaments.any? %>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Nom</th>
+                  <th>Statut</th>
+                  <th>Date de début</th>
+                  <th>Équipes</th>
+                  <% if current_user.super_admin? %>
+                    <th>Organisateur</th>
+                  <% end %>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @tournaments.each do |tournament| %>
+                  <tr>
+                    <td>
+                      <strong><%= tournament.name %></strong>
+                      <% if tournament.description.present? %>
+                        <br><small class="text-muted"><%= truncate(tournament.description, length: 50) %></small>
+                      <% end %>
+                    </td>
+                    <td>
+                      <% case tournament.status %>
+                      <% when 'draft' %>
+                        <span class="badge badge-secondary">Brouillon</span>
+                      <% when 'active' %>
+                        <span class="badge badge-success">Actif</span>
+                      <% when 'completed' %>
+                        <span class="badge badge-info">Terminé</span>
+                      <% end %>
+                    </td>
+                    <td><%= tournament.start_date&.strftime("%d/%m/%Y") %></td>
+                    <td><%= tournament.teams.count %> / <%= tournament.max_teams %></td>
+                    <% if current_user.super_admin? %>
+                      <td><%= tournament.user.full_name %></td>
+                    <% end %>
+                    <td>
+                      <%= link_to admin_tournament_path(tournament), class: "btn btn-sm btn-primary" do %>
+                        <i class="fas fa-eye"></i>
+                      <% end %>
+                      <%= link_to edit_admin_tournament_path(tournament), class: "btn btn-sm btn-secondary" do %>
+                        <i class="fas fa-edit"></i>
+                      <% end %>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        <% else %>
+          <div class="text-center py-4">
+            <i class="fas fa-trophy fa-3x text-muted mb-3"></i>
+            <h4 class="text-muted">Aucun tournoi</h4>
+            <p class="text-muted">Commencez par créer votre premier tournoi</p>
+            <%= link_to new_admin_tournament_path, class: "btn btn-primary" do %>
+              <i class="fas fa-plus"></i>
+              Créer un tournoi
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Matchs récents -->
+<% if @recent_games.any? %>
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">
+            <i class="fas fa-basketball-ball"></i>
+            Matchs récents
+          </h3>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Tournoi</th>
+                  <th>Match</th>
+                  <th>Type</th>
+                  <th>Statut</th>
+                  <th>Score</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @recent_games.each do |game| %>
+                  <tr>
+                    <td><%= game.tournament.name %></td>
+                    <td>
+                      <strong><%= game.home_team.name %></strong> vs <strong><%= game.away_team.name %></strong>
+                    </td>
+                    <td>
+                      <% case game.type %>
+                      <% when 'pool' %>
+                        <span class="badge badge-info">Poule</span>
+                      <% when 'quarter' %>
+                        <span class="badge badge-warning">Quart</span>
+                      <% when 'semi' %>
+                        <span class="badge badge-success">Demi</span>
+                      <% when 'final' %>
+                        <span class="badge badge-primary">Finale</span>
+                      <% end %>
+                    </td>
+                    <td>
+                      <% if game.played? %>
+                        <span class="badge badge-success">Joué</span>
+                      <% else %>
+                        <span class="badge badge-secondary">Programmé</span>
+                      <% end %>
+                    </td>
+                    <td>
+                      <% if game.played? %>
+                        <strong><%= game.home_score %> - <%= game.away_score %></strong>
+                      <% else %>
+                        <span class="text-muted">-</span>
+                      <% end %>
+                    </td>
+                    <td><%= game.scheduled_at&.strftime("%d/%m %H:%M") %></td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>CBC Tournament Admin</title>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "admin", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+
+    <!-- Font Awesome pour les icônes -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  </head>
+
+  <body>
+    <div class="admin-container">
+      <!-- Sidebar -->
+      <nav class="admin-sidebar" id="sidebar">
+        <div class="sidebar-header">
+          <h2><i class="fas fa-basketball-ball"></i> CBC Admin</h2>
+        </div>
+
+        <div class="sidebar-nav">
+          <%= link_to admin_root_path, class: "nav-link #{'active' if current_page?(admin_root_path)}" do %>
+            <i class="fas fa-tachometer-alt"></i>
+            Dashboard
+          <% end %>
+
+          <%= link_to admin_tournaments_path, class: "nav-link #{'active' if controller_name == 'tournaments'}" do %>
+            <i class="fas fa-trophy"></i>
+            Tournois
+          <% end %>
+
+          <% if current_user&.super_admin? %>
+            <%= link_to "#", class: "nav-link" do %>
+              <i class="fas fa-users"></i>
+              Utilisateurs
+            <% end %>
+          <% end %>
+        </div>
+
+        <div class="user-info">
+          <div class="user-name"><%= current_user&.full_name %></div>
+          <div class="user-role">
+            <%= current_user&.super_admin? ? "Super Admin" : "Organisateur" %>
+          </div>
+        </div>
+      </nav>
+
+      <!-- Main Content -->
+      <main class="admin-main" id="main">
+        <!-- Header -->
+        <header class="admin-header">
+          <div class="header-left">
+            <button class="sidebar-toggle" id="sidebarToggle">
+              <i class="fas fa-bars"></i>
+            </button>
+            <h1 class="header-title">Administration</h1>
+          </div>
+
+          <div class="header-actions">
+            <%= link_to root_path, class: "btn btn-secondary" do %>
+              <i class="fas fa-home"></i>
+              Site Public
+            <% end %>
+            <%= link_to destroy_user_session_path, method: :delete, class: "btn btn-logout" do %>
+              <i class="fas fa-sign-out-alt"></i>
+              Déconnexion
+            <% end %>
+          </div>
+        </header>
+
+        <!-- Content -->
+        <div class="admin-content">
+          <% if notice %>
+            <div class="alert alert-success">
+              <i class="fas fa-check-circle"></i>
+              <%= notice %>
+            </div>
+          <% end %>
+
+          <% if alert %>
+            <div class="alert alert-danger">
+              <i class="fas fa-exclamation-circle"></i>
+              <%= alert %>
+            </div>
+          <% end %>
+
+          <%= yield %>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      // Sidebar toggle for mobile
+      document.getElementById('sidebarToggle').addEventListener('click', function() {
+        const sidebar = document.getElementById('sidebar');
+        const main = document.getElementById('main');
+
+        sidebar.classList.toggle('show');
+        main.classList.toggle('expanded');
+      });
+
+      // Close sidebar when clicking outside on mobile
+      document.addEventListener('click', function(event) {
+        const sidebar = document.getElementById('sidebar');
+        const toggle = document.getElementById('sidebarToggle');
+
+        if (window.innerWidth <= 768 &&
+            !sidebar.contains(event.target) &&
+            !toggle.contains(event.target) &&
+            sidebar.classList.contains('show')) {
+          sidebar.classList.remove('show');
+          document.getElementById('main').classList.remove('expanded');
+        }
+      });
+    </script>
+  </body>
+</html>

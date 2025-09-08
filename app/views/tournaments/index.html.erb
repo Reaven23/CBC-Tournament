@@ -1,0 +1,91 @@
+<!-- Header Section -->
+<section class="py-5 bg-light">
+  <div class="container">
+    <div class="row">
+      <div class="col-12 text-center">
+        <h1 class="display-4 fw-bold mb-3">
+          <i class="fas fa-trophy text-warning me-3"></i>
+          Tournois de Basketball
+        </h1>
+        <p class="lead text-muted">
+          Consultez tous les tournois en cours et terminés
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Tournaments List -->
+<section class="py-5">
+  <div class="container">
+    <% if @tournaments.any? %>
+      <div class="row g-4">
+        <% @tournaments.each do |tournament| %>
+          <div class="col-md-6 col-lg-4">
+            <div class="card tournament-card h-100">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                  <h5 class="card-title mb-0"><%= tournament.name %></h5>
+                  <span class="badge tournament-status <%= tournament.status %>">
+                    <%= tournament.status.humanize %>
+                  </span>
+                </div>
+
+                <% if tournament.description.present? %>
+                  <p class="card-text text-muted small mb-3">
+                    <%= truncate(tournament.description, length: 100) %>
+                  </p>
+                <% end %>
+
+                <div class="row text-center mb-3">
+                  <div class="col-4">
+                    <div class="text-primary fw-bold"><%= tournament.teams.count %></div>
+                    <small class="text-muted">Équipes</small>
+                  </div>
+                  <div class="col-4">
+                    <div class="text-success fw-bold"><%= tournament.pools.count %></div>
+                    <small class="text-muted">Poules</small>
+                  </div>
+                  <div class="col-4">
+                    <div class="text-info fw-bold"><%= tournament.games.count %></div>
+                    <small class="text-muted">Matchs</small>
+                  </div>
+                </div>
+
+                <div class="mb-3">
+                  <small class="text-muted d-block">
+                    <i class="fas fa-calendar me-1"></i>
+                    <%= tournament.start_date&.strftime("%d/%m/%Y") %> - <%= tournament.end_date&.strftime("%d/%m/%Y") %>
+                  </small>
+                  <small class="text-muted d-block">
+                    <i class="fas fa-user me-1"></i>
+                    Organisé par <%= tournament.user.full_name %>
+                  </small>
+                </div>
+
+                <div class="d-grid">
+                  <%= link_to tournament_path(tournament), class: "btn btn-primary" do %>
+                    <i class="fas fa-eye me-2"></i>
+                    Voir le tournoi
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="text-center py-5">
+        <i class="fas fa-trophy fa-4x text-muted mb-4"></i>
+        <h3 class="text-muted">Aucun tournoi disponible</h3>
+        <p class="text-muted">
+          Il n'y a actuellement aucun tournoi actif ou terminé à consulter.
+        </p>
+        <%= link_to root_path, class: "btn btn-outline-primary" do %>
+          <i class="fas fa-arrow-left me-2"></i>
+          Retour à l'accueil
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</section>
