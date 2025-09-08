@@ -12,7 +12,7 @@ class Admin::TournamentsController < Admin::BaseController
 
   def show
     @pools = @tournament.pools.ordered.includes(:teams)
-    @games = @tournament.games.includes(:home_team, :away_team, :winner).order(:type, :round_number)
+    @games = @tournament.games.includes(:home_team, :away_team, :winner).order(:game_type, :round_number)
     @teams = @tournament.teams.includes(:pool)
   end
 

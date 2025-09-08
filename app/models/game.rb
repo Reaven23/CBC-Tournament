@@ -14,6 +14,7 @@ class Game < ApplicationRecord
   validates :status, inclusion: { in: %w[scheduled played] }
   validates :home_score, :away_score, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
   validates :round_number, presence: true, numericality: { greater_than: 0 }
+  validates :court_number, presence: true, if: :game_start?
 
   # Callbacks
   after_update :calculate_winner, if: :saved_change_to_home_score? || :saved_change_to_away_score?
@@ -39,6 +40,11 @@ class Game < ApplicationRecord
 
   def knockout_game?
     %w[quarter semi final third_place].include?(game_type)
+  end
+
+  def formatted_game_start
+    return "Non programmé" unless game_start?
+    game_start.strftime("%Hh%M")
   end
 
   def can_generate_next_phase?

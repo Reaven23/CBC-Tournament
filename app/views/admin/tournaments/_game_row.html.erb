@@ -1,0 +1,91 @@
+<tr id="game_<%= game.id %>">
+  <% if game.pool_game? %>
+    <td>
+      <strong><%= game.home_team.name %></strong> vs <strong><%= game.away_team.name %></strong>
+    </td>
+    <td>
+      <span class="badge bg-info"><%= game.formatted_game_start %></span>
+    </td>
+    <td>
+      <span class="badge bg-secondary"><%= game.court_number || "Non défini" %></span>
+    </td>
+    <td>
+      <% if game.played? %>
+        <span class="badge bg-success">Joué</span>
+      <% else %>
+        <span class="badge bg-warning">Programmé</span>
+      <% end %>
+    </td>
+    <td>
+      <% if game.played? %>
+        <strong><%= game.home_score %> - <%= game.away_score %></strong>
+      <% else %>
+        <span class="text-muted">-</span>
+      <% end %>
+    </td>
+    <td>
+      <% if game.referees.any? %>
+        <% game.referees.each do |referee| %>
+          <span class="badge bg-light text-dark me-1"><%= referee.name %></span>
+        <% end %>
+      <% else %>
+        <span class="text-muted">Non assigné</span>
+      <% end %>
+    </td>
+    <td>
+      <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#gameModal<%= game.id %>">
+        <i class="fas fa-edit"></i> Modifier
+      </button>
+    </td>
+  <% else %>
+    <td>
+      <% case game.game_type %>
+      <% when 'quarter' %>
+        <span class="badge bg-warning">Quart</span>
+      <% when 'semi' %>
+        <span class="badge bg-success">Demi</span>
+      <% when 'final' %>
+        <span class="badge bg-primary">Finale</span>
+      <% when 'third_place' %>
+        <span class="badge bg-info">3ème place</span>
+      <% end %>
+    </td>
+    <td>
+      <strong><%= game.home_team.name %></strong> vs <strong><%= game.away_team.name %></strong>
+    </td>
+    <td>
+      <span class="badge bg-info"><%= game.formatted_game_start %></span>
+    </td>
+    <td>
+      <span class="badge bg-secondary"><%= game.court_number || "Non défini" %></span>
+    </td>
+    <td>
+      <% if game.played? %>
+        <span class="badge bg-success">Joué</span>
+      <% else %>
+        <span class="badge bg-warning">Programmé</span>
+      <% end %>
+    </td>
+    <td>
+      <% if game.played? %>
+        <strong><%= game.home_score %> - <%= game.away_score %></strong>
+      <% else %>
+        <span class="text-muted">-</span>
+      <% end %>
+    </td>
+    <td>
+      <% if game.referees.any? %>
+        <% game.referees.each do |referee| %>
+          <span class="badge bg-light text-dark me-1"><%= referee.name %></span>
+        <% end %>
+      <% else %>
+        <span class="text-muted">Non assigné</span>
+      <% end %>
+    </td>
+    <td>
+      <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#gameModal<%= game.id %>">
+        <i class="fas fa-edit"></i> Modifier
+      </button>
+    </td>
+  <% end %>
+</tr>

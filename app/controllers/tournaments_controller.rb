@@ -8,6 +8,6 @@ class TournamentsController < ApplicationController
   def show
     @tournament = Tournament.includes(:pools, :teams, :games).find(params[:id])
     @pools = @tournament.pools.ordered.includes(:teams)
-    @games = @tournament.games.includes(:home_team, :away_team, :winner).order(:type, :round_number)
+    @games = @tournament.games.includes(:home_team, :away_team, :winner).order(:game_type, :round_number)
   end
 end
