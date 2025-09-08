@@ -11,9 +11,9 @@ class Admin::TournamentsController < Admin::BaseController
   end
 
   def show
-    @pools = @tournament.pools.ordered.includes(:teams)
-    @games = @tournament.games.includes(:home_team, :away_team, :winner).order(:type, :round_number)
-    @teams = @tournament.teams.includes(:pool)
+    @pools = @tournament.pools.ordered.includes(teams: { photo_attachment: :blob })
+    @games = @tournament.games.includes(:home_team, :away_team, :winner).order(:game_type, :round_number)
+    @teams = @tournament.teams.includes(:pool, photo_attachment: :blob)
   end
 
   def new

@@ -21,6 +21,7 @@ Rails.application.routes.draw do
           delete :remove_photo
         end
       end
+      resources :games, only: [:edit, :update]
     end
   end
 

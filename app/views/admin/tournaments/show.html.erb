@@ -180,62 +180,80 @@
         <% if @games.any? %>
           <div class="row">
             <div class="col-12">
-              <h4>Matchs</h4>
-              <div class="table-responsive">
-                <table class="table">
-                  <thead>
-                    <tr>
-                      <th>Type</th>
-                      <th>Match</th>
-                      <th>Statut</th>
-                      <th>Score</th>
-                      <th>Date</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <% @games.each do |game| %>
-                      <tr>
-                        <td>
-                          <% case game.type %>
-                          <% when 'pool' %>
-                            <span class="badge badge-info">Poule</span>
-                          <% when 'quarter' %>
-                            <span class="badge badge-warning">Quart</span>
-                          <% when 'semi' %>
-                            <span class="badge badge-success">Demi</span>
-                          <% when 'final' %>
-                            <span class="badge badge-primary">Finale</span>
+              <h4>Matchs par poule</h4>
+
+              <!-- Matchs de poule -->
+              <% @pools.each do |pool| %>
+                <% pool_games = @games.where(pool: pool) %>
+                <% if pool_games.any? %>
+                  <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                      <h5 class="card-title mb-0">
+                        <i class="fas fa-layer-group me-2"></i>
+                        <%= pool.name %> - Matchs
+                      </h5>
+                    </div>
+                    <div class="card-body p-0">
+                      <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                          <thead class="table-light">
+                            <tr>
+                              <th>Match</th>
+                              <th>Heure</th>
+                              <th>Terrain</th>
+                              <th>Statut</th>
+                              <th>Score</th>
+                              <th>Arbitres</th>
+                              <th>Actions</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <% pool_games.each do |game| %>
+                              <%= render partial: "admin/tournaments/game_row", locals: { game: game } %>
+                            <% end %>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                <% end %>
+              <% end %>
+
+              <!-- Matchs éliminatoires -->
+              <% knockout_games = @games.where(game_type: %w[quarter semi final third_place]) %>
+              <% if knockout_games.any? %>
+                <div class="card mb-4">
+                  <div class="card-header bg-warning text-dark">
+                    <h5 class="card-title mb-0">
+                      <i class="fas fa-trophy me-2"></i>
+                      Phase éliminatoire
+                    </h5>
+                  </div>
+                  <div class="card-body p-0">
+                    <div class="table-responsive">
+                      <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                          <tr>
+                            <th>Type</th>
+                            <th>Match</th>
+                            <th>Heure</th>
+                            <th>Terrain</th>
+                            <th>Statut</th>
+                            <th>Score</th>
+                            <th>Arbitres</th>
+                            <th>Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <% knockout_games.each do |game| %>
+                            <%= render partial: "admin/tournaments/game_row", locals: { game: game } %>
                           <% end %>
-                        </td>
-                        <td>
-                          <strong><%= game.home_team.name %></strong> vs <strong><%= game.away_team.name %></strong>
-                        </td>
-                        <td>
-                          <% if game.played? %>
-                            <span class="badge badge-success">Joué</span>
-                          <% else %>
-                            <span class="badge badge-secondary">Programmé</span>
-                          <% end %>
-                        </td>
-                        <td>
-                          <% if game.played? %>
-                            <strong><%= game.home_score %> - <%= game.away_score %></strong>
-                          <% else %>
-                            <span class="text-muted">-</span>
-                          <% end %>
-                        </td>
-                        <td><%= game.scheduled_at&.strftime("%d/%m %H:%M") %></td>
-                        <td>
-                          <%= link_to "#", class: "btn btn-sm btn-outline-primary" do %>
-                            <i class="fas fa-eye"></i>
-                          <% end %>
-                        </td>
-                      </tr>
-                    <% end %>
-                  </tbody>
-                </table>
-              </div>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
             </div>
           </div>
         <% end %>
@@ -252,7 +270,7 @@
         <h5 class="modal-title" id="addTeamModalLabel">Ajouter une équipe</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-        <%= simple_form_for :team, url: admin_tournament_teams_path(@tournament), method: :post, local: true, html: { multipart: true } do |f| %>
+        <%= simple_form_for Team.new, url: admin_tournament_teams_path(@tournament), method: :post, local: true, html: { multipart: true } do |f| %>
           <div class="modal-body">
             <%= f.input :name, label: "Nom de l'équipe", required: true, input_html: { class: "form-control" } %>
             <%= f.input :color, label: "Couleur du maillot", as: :color, input_html: { class: "form-control", value: "#FF6B35" } %>
@@ -330,6 +348,24 @@ function toggleTeamAssignment() {
     </div>
   </div>
 </div>
+
+<!-- Game Management Modals -->
+<% @games.each do |game| %>
+<div class="modal fade" id="gameModal<%= game.id %>" tabindex="-1" aria-labelledby="gameModalLabel<%= game.id %>" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="gameModalLabel<%= game.id %>">
+          <i class="fas fa-basketball-ball me-2"></i>
+          Modifier le match
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <%= render partial: "admin/tournaments/game_modal_content", locals: { game: game, tournament: @tournament, referees: @tournament.referees } %>
+    </div>
+  </div>
+</div>
+<% end %>
 
 <!-- Pool Management Modals -->
 <% @pools.each do |pool| %>

@@ -4,12 +4,12 @@ class Admin::TeamsController < Admin::BaseController
 
   def create
     @team = @tournament.teams.build(team_params)
-    @team.tournament = @tournament
 
     if @team.save
       redirect_to admin_tournament_path(@tournament), notice: 'Équipe ajoutée avec succès.'
     else
-      redirect_to admin_tournament_path(@tournament), alert: 'Erreur lors de l\'ajout de l\'équipe.'
+      error_messages = @team.errors.full_messages.join(', ')
+      redirect_to admin_tournament_path(@tournament), alert: "Erreur lors de l'ajout de l'équipe: #{error_messages}"
     end
   end
 
@@ -41,7 +41,9 @@ class Admin::TeamsController < Admin::BaseController
       respond_to do |format|
         format.html { redirect_to admin_tournament_path(@tournament), notice: "#{@team.name} assignée à #{pool.name}." }
         format.turbo_stream {
-          @pools = @tournament.pools.ordered.includes(teams: { photo_attachment: :blob })
+          # Recharger la poule avec ses équipes
+          pool.reload
+          pool = @tournament.pools.includes(teams: { photo_attachment: :blob }).find(pool.id)
           @teams = @tournament.teams.includes(:pool, photo_attachment: :blob)
           render turbo_stream: [
             turbo_stream.replace("pool_modal_#{pool.id}", partial: "admin/tournaments/pool_modal_content", locals: { pool: pool, tournament: @tournament, teams: @teams }),
@@ -66,7 +68,9 @@ class Admin::TeamsController < Admin::BaseController
       respond_to do |format|
         format.html { redirect_to admin_tournament_path(@tournament), notice: "#{@team.name} retirée de #{pool_name}." }
         format.turbo_stream {
-          @pools = @tournament.pools.ordered.includes(teams: { photo_attachment: :blob })
+          # Recharger la poule avec ses équipes
+          pool.reload
+          pool = @tournament.pools.includes(teams: { photo_attachment: :blob }).find(pool.id)
           @teams = @tournament.teams.includes(:pool, photo_attachment: :blob)
           render turbo_stream: [
             turbo_stream.replace("pool_modal_#{pool.id}", partial: "admin/tournaments/pool_modal_content", locals: { pool: pool, tournament: @tournament, teams: @teams }),
@@ -95,6 +99,6 @@ class Admin::TeamsController < Admin::BaseController
   end
 
   def team_params
-    params.permit(:name, :color, :description, :photo)
+    params.require(:team).permit(:name, :color, :description, :photo)
   end
 end

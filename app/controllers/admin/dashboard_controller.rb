@@ -6,16 +6,22 @@ class Admin::DashboardController < Admin::BaseController
                      current_user.tournaments.includes(:pools, :teams).order(created_at: :desc).limit(10)
                    end
 
-    @recent_games = Game.includes(:tournament, :home_team, :away_team)
-                       .where(tournament: @tournaments.map(&:id))
-                       .order(updated_at: :desc)
-                       .limit(5)
+    tournament_ids = @tournaments.map(&:id)
+
+    @recent_games = if tournament_ids.any?
+                      Game.includes(:tournament, :home_team, :away_team)
+                          .where(tournament_id: tournament_ids)
+                          .order(updated_at: :desc)
+                          .limit(5)
+                    else
+                      Game.none
+                    end
 
     @stats = {
-      total_tournaments: @tournaments.count,
+      total_tournaments: Tournament.count,
       active_tournaments: Tournament.active.count,
-      total_games: Game.where(tournament: @tournaments.map(&:id)).count,
-      completed_games: Game.where(tournament: @tournaments.map(&:id), status: 'played').count
+      total_games: Game.count,
+      completed_games: Game.where(status: 'played').count
     }
   end
 end

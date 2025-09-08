@@ -22,27 +22,27 @@ class Tournament < ApplicationRecord
 
   # Methods
   def pool_games
-    games.where(type: 'pool')
+    games.where(game_type: 'pool')
   end
 
   def knockout_games
-    games.where(type: %w[quarter semi final third_place])
+    games.where(game_type: %w[quarter semi final third_place])
   end
 
   def can_generate_quarters?
-    pool_games.all?(&:played?) && games.where(type: 'quarter').empty?
+    pool_games.all?(&:played?) && games.where(game_type: 'quarter').empty?
   end
 
   def can_generate_semis?
-    games.where(type: 'quarter').all?(&:played?) && games.where(type: 'semi').empty?
+    games.where(game_type: 'quarter').all?(&:played?) && games.where(game_type: 'semi').empty?
   end
 
   def can_generate_finals?
-    games.where(type: 'semi').all?(&:played?) && games.where(type: 'final').empty?
+    games.where(game_type: 'semi').all?(&:played?) && games.where(game_type: 'final').empty?
   end
 
   def can_generate_third_place?
-    has_third_place? && games.where(type: 'semi').all?(&:played?) && games.where(type: 'third_place').empty?
+    has_third_place? && games.where(game_type: 'semi').all?(&:played?) && games.where(game_type: 'third_place').empty?
   end
 
   def generate_quarter_finals
