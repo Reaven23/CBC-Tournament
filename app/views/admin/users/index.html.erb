@@ -1,0 +1,40 @@
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h2>Utilisateurs</h2>
+  <%= link_to new_admin_user_path, class: "btn btn-primary" do %>
+    <i class="fas fa-plus"></i>
+    Nouvel organisateur
+  <% end %>
+  </div>
+
+<div class="card">
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead class="table-light">
+          <tr>
+            <th>Nom</th>
+            <th>Email</th>
+            <th>Rôle</th>
+            <th>Tournois</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @users.each do |user| %>
+            <tr>
+              <td><%= user.full_name %></td>
+              <td><%= user.email %></td>
+              <td><%= user.role %></td>
+              <td>
+                <% if user.tournaments.any? %>
+                  <%= user.tournaments.map(&:name).join(', ') %>
+                <% else %>
+                  -
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

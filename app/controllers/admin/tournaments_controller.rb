@@ -11,12 +11,22 @@ class Admin::TournamentsController < Admin::BaseController
   end
 
   def show
+    # Vérifier que l'organisateur ne peut accéder qu'à son tournoi assigné
+    unless current_user.super_admin? || @tournament.user == current_user
+      redirect_to admin_root_path, alert: 'Accès non autorisé à ce tournoi.'
+      return
+    end
+
     @pools = @tournament.pools.ordered.includes(teams: { photo_attachment: :blob })
     @games = @tournament.games.includes(:home_team, :away_team, :winner).order(:game_type, :round_number)
     @teams = @tournament.teams.includes(:pool, photo_attachment: :blob)
   end
 
   def new
+    unless current_user.super_admin?
+      redirect_to admin_root_path, alert: 'Seuls les super administrateurs peuvent créer des tournois.'
+      return
+    end
     @tournament = Tournament.new
   end
 

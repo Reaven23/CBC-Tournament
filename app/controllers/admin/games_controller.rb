@@ -9,7 +9,7 @@ class Admin::GamesController < Admin::BaseController
 
   def update
     # Préparer les paramètres de mise à jour
-    update_params = game_params.except(:game_start_time)
+    update_params = game_params.except(:game_start_time, :referee_1_id, :referee_2_id)
 
     # Traiter l'heure séparément
     if params[:game][:game_start_time].present?
@@ -21,6 +21,19 @@ class Admin::GamesController < Admin::BaseController
       end
     else
       update_params[:game_start] = nil
+    end
+
+    # Gérer les arbitres - on va gérer manuellement les GameReferee
+    # D'abord, supprimer les arbitres existants
+    @game.game_referees.destroy_all
+
+    # Puis créer les nouveaux GameReferee avec des rôles appropriés
+    if params[:game][:referee_1_id].present?
+      @game.game_referees.create!(referee_id: params[:game][:referee_1_id], role: 'referee')
+    end
+
+    if params[:game][:referee_2_id].present?
+      @game.game_referees.create!(referee_id: params[:game][:referee_2_id], role: 'assistant')
     end
 
     if @game.update(update_params)
@@ -53,6 +66,6 @@ class Admin::GamesController < Admin::BaseController
   end
 
   def game_params
-    params.require(:game).permit(:game_start, :court_number, :home_score, :away_score, referee_ids: [])
+    params.require(:game).permit(:game_start, :court_number, :home_score, :away_score, :referee_1_id, :referee_2_id)
   end
 end

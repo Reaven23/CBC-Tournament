@@ -8,7 +8,12 @@
         </h2>
       </div>
       <div class="card-body">
-        <p class="lead">Bienvenue dans l'administration des tournois CBC</p>
+        <% if current_user.super_admin? %>
+          <p class="lead">Bienvenue dans l'administration des tournois CBC</p>
+        <% else %>
+          <p class="lead">Bienvenue, <%= current_user.full_name %></p>
+          <p class="text-muted">Vous gérez le tournoi qui vous a été assigné</p>
+        <% end %>
       </div>
     </div>
   </div>
@@ -77,24 +82,41 @@
       </div>
       <div class="card-body">
         <div class="row">
-          <div class="col-md-4 mb-3">
-            <%= link_to new_admin_tournament_path, class: "btn btn-primary btn-lg w-100" do %>
-              <i class="fas fa-plus"></i>
-              Nouveau Tournoi
+          <% if current_user.super_admin? %>
+            <div class="col-md-4 mb-3">
+              <%= link_to new_admin_tournament_path, class: "btn btn-primary btn-lg w-100" do %>
+                <i class="fas fa-plus"></i>
+                Nouveau Tournoi
+              <% end %>
+            </div>
+            <div class="col-md-4 mb-3">
+              <%= link_to admin_tournaments_path, class: "btn btn-secondary btn-lg w-100" do %>
+                <i class="fas fa-list"></i>
+                Voir tous les tournois
+              <% end %>
+            </div>
+            <div class="col-md-4 mb-3">
+              <%= link_to root_path, class: "btn btn-info btn-lg w-100" do %>
+                <i class="fas fa-eye"></i>
+                Voir le site public
+              <% end %>
+            </div>
+          <% else %>
+            <% if @tournaments.any? %>
+              <div class="col-md-6 mb-3">
+                <%= link_to admin_tournament_path(@tournaments.first), class: "btn btn-primary btn-lg w-100" do %>
+                  <i class="fas fa-cog"></i>
+                  Gérer mon tournoi
+                <% end %>
+              </div>
             <% end %>
-          </div>
-          <div class="col-md-4 mb-3">
-            <%= link_to admin_tournaments_path, class: "btn btn-secondary btn-lg w-100" do %>
-              <i class="fas fa-list"></i>
-              Voir tous les tournois
-            <% end %>
-          </div>
-          <div class="col-md-4 mb-3">
-            <%= link_to root_path, class: "btn btn-info btn-lg w-100" do %>
-              <i class="fas fa-eye"></i>
-              Voir le site public
-            <% end %>
-          </div>
+            <div class="col-md-6 mb-3">
+              <%= link_to root_path, class: "btn btn-info btn-lg w-100" do %>
+                <i class="fas fa-eye"></i>
+                Voir le site public
+              <% end %>
+            </div>
+          <% end %>
         </div>
       </div>
     </div>
@@ -108,7 +130,11 @@
       <div class="card-header">
         <h3 class="card-title">
           <i class="fas fa-clock"></i>
-          Tournois récents
+          <% if current_user.super_admin? %>
+            Tournois récents
+          <% else %>
+            Mon tournoi
+          <% end %>
         </h3>
       </div>
       <div class="card-body">
@@ -167,11 +193,16 @@
         <% else %>
           <div class="text-center py-4">
             <i class="fas fa-trophy fa-3x text-muted mb-3"></i>
-            <h4 class="text-muted">Aucun tournoi</h4>
-            <p class="text-muted">Commencez par créer votre premier tournoi</p>
-            <%= link_to new_admin_tournament_path, class: "btn btn-primary" do %>
-              <i class="fas fa-plus"></i>
-              Créer un tournoi
+            <% if current_user.super_admin? %>
+              <h4 class="text-muted">Aucun tournoi</h4>
+              <p class="text-muted">Commencez par créer votre premier tournoi</p>
+              <%= link_to new_admin_tournament_path, class: "btn btn-primary" do %>
+                <i class="fas fa-plus"></i>
+                Créer un tournoi
+              <% end %>
+            <% else %>
+              <h4 class="text-muted">Aucun tournoi assigné</h4>
+              <p class="text-muted">Contactez un super administrateur pour vous assigner un tournoi</p>
             <% end %>
           </div>
         <% end %>

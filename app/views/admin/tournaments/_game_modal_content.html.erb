@@ -44,14 +44,45 @@
 
       <div class="row mt-3">
         <div class="col-12">
-          <h6 class="text-primary">Arbitres</h6>
-          <%= f.input :referee_ids,
-                      label: false,
-                      as: :check_boxes,
-                      collection: referees.map { |r| [r.name, r.id] },
-                      input_html: { class: "form-check-input" },
-                      wrapper_html: { class: "form-check" },
-                      hint: "Sélectionnez les arbitres pour ce match" %>
+          <h6 class="text-primary mb-3">
+            <i class="fas fa-whistle me-2"></i>Arbitres
+          </h6>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="referee_1_id" class="form-label">
+                  <i class="fas fa-user-tie me-1"></i>Arbitre 1
+                </label>
+                <select name="game[referee_1_id]" id="referee_1_id" class="form-select">
+                  <option value="">— Sélectionner un arbitre —</option>
+                  <% referees.each do |referee| %>
+                    <option value="<%= referee.id %>" <%= 'selected' if game.referees.include?(referee) && game.referees.first == referee %>>
+                      <%= referee.name %>
+                    </option>
+                  <% end %>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="referee_2_id" class="form-label">
+                  <i class="fas fa-user-tie me-1"></i>Arbitre 2
+                </label>
+                <select name="game[referee_2_id]" id="referee_2_id" class="form-select">
+                  <option value="">— Sélectionner un arbitre —</option>
+                  <% referees.each do |referee| %>
+                    <option value="<%= referee.id %>" <%= 'selected' if game.referees.include?(referee) && game.referees.second == referee %>>
+                      <%= referee.name %>
+                    </option>
+                  <% end %>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="form-text">
+            <i class="fas fa-info-circle me-1"></i>
+            Sélectionnez jusqu'à 2 arbitres pour ce match
+          </div>
         </div>
       </div>
     </div>

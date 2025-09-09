@@ -1,0 +1,142 @@
+// Styles pour les tableaux de matchs
+.games-table {
+  // Contrôler la largeur des colonnes
+  .winner-cell {
+    width: 120px; // Largeur fixe pour la colonne vainqueur
+    max-width: 120px;
+    min-width: 120px;
+  }
+
+  // Tronquer le texte du nom du vainqueur
+  .winner-name {
+    display: inline-block;
+    max-width: 100px; // Laisse un peu de marge pour le badge
+    white-space: nowrap; // Empêche le retour à la ligne
+    overflow: hidden; // Cache le texte qui dépasse
+    text-overflow: ellipsis; // Ajoute les trois points (...)
+    vertical-align: middle; // Centre verticalement
+  }
+
+  // S'assurer que la colonne score a assez d'espace
+  .score-cell {
+    width: 120px;
+    min-width: 120px;
+    text-align: center;
+  }
+
+  // Contrôler la largeur de la colonne arbitres
+  .referees-cell {
+    width: 140px;
+    max-width: 140px;
+    min-width: 140px;
+  }
+
+  // Contrôler la largeur de la colonne match
+  .match-cell {
+    width: 200px;
+    max-width: 200px;
+    min-width: 200px;
+  }
+
+  // Style pour l'affichage vertical des arbitres
+  .referees-list {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    align-items: flex-start; // Aligner les badges à gauche
+
+    .badge {
+      font-size: 0.75rem;
+      padding: 0.3rem 0.6rem;
+      white-space: nowrap;
+      text-align: center;
+      width: auto; // Largeur automatique basée sur le contenu
+      min-width: fit-content; // Largeur minimale pour le contenu
+      max-width: 130px; // Largeur maximale pour éviter le débordement
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  // Responsive : sur mobile, ajuster les largeurs
+  @media (max-width: 768px) {
+    .winner-cell {
+      width: 80px;
+      max-width: 80px;
+      min-width: 80px;
+    }
+
+    .winner-name {
+      max-width: 60px;
+    }
+
+    .score-cell {
+      width: 80px;
+      min-width: 80px;
+    }
+
+    .referees-cell {
+      width: 100px;
+      max-width: 100px;
+      min-width: 100px;
+    }
+
+    .match-cell {
+      width: 150px;
+      max-width: 150px;
+      min-width: 150px;
+    }
+  }
+}
+
+// Styles pour les en-têtes de colonnes
+.games-table th {
+  &.winner-header {
+    width: 120px;
+    min-width: 120px;
+    max-width: 120px;
+  }
+
+  &.score-header {
+    width: 120px;
+    min-width: 120px;
+    text-align: center;
+  }
+
+  &.referees-header {
+    width: 140px;
+    min-width: 140px;
+    max-width: 140px;
+  }
+
+  &.match-header {
+    width: 200px;
+    min-width: 200px;
+    max-width: 200px;
+  }
+
+  @media (max-width: 768px) {
+    &.winner-header {
+      width: 80px;
+      min-width: 80px;
+      max-width: 80px;
+    }
+
+    &.score-header {
+      width: 80px;
+      min-width: 80px;
+    }
+
+    &.referees-header {
+      width: 100px;
+      min-width: 100px;
+      max-width: 100px;
+    }
+
+    &.match-header {
+      width: 150px;
+      min-width: 150px;
+      max-width: 150px;
+    }
+  }
+}
