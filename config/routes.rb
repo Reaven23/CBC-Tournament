@@ -9,8 +9,11 @@ Rails.application.routes.draw do
     resources :tournaments do
       member do
         patch :generate_quarters
+        delete :delete_quarters
         patch :generate_semis
+        delete :delete_semis
         patch :generate_finals
+        delete :delete_finals
         post :create_pools
         patch :generate_pool_games
       end
