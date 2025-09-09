@@ -1,6 +1,6 @@
 class Admin::TournamentsController < Admin::BaseController
-  before_action :set_tournament, only: [:show, :edit, :update, :destroy, :generate_quarters, :generate_semis, :generate_finals, :create_pools, :generate_pool_games]
-  before_action :authorize_tournament_management!, only: [:show, :edit, :update, :destroy, :generate_quarters, :generate_semis, :generate_finals, :create_pools, :generate_pool_games]
+  before_action :set_tournament, only: [:show, :edit, :update, :destroy, :generate_quarters, :delete_quarters, :generate_semis, :delete_semis, :generate_finals, :delete_finals, :create_pools, :generate_pool_games]
+  before_action :authorize_tournament_management!, only: [:show, :edit, :update, :destroy, :generate_quarters, :delete_quarters, :generate_semis, :delete_semis, :generate_finals, :delete_finals, :create_pools, :generate_pool_games]
 
   def index
     @tournaments = if current_user.super_admin?
@@ -56,6 +56,15 @@ class Admin::TournamentsController < Admin::BaseController
     end
   end
 
+  def delete_quarters
+    if @tournament.can_delete_quarters?
+      @tournament.delete_quarter_finals
+      redirect_to admin_tournament_path(@tournament), notice: 'Quarts de finale supprimés avec succès.'
+    else
+      redirect_to admin_tournament_path(@tournament), alert: 'Impossible de supprimer les quarts de finale.'
+    end
+  end
+
   def generate_semis
     if @tournament.can_generate_semis?
       @tournament.generate_semi_finals
@@ -92,6 +101,24 @@ class Admin::TournamentsController < Admin::BaseController
       redirect_to admin_tournament_path(@tournament), notice: 'Matchs de poule générés avec succès.'
     else
       redirect_to admin_tournament_path(@tournament), alert: 'Impossible de générer les matchs de poule.'
+    end
+  end
+
+  def delete_semis
+    if @tournament.can_delete_semis?
+      @tournament.delete_semi_finals
+      redirect_to admin_tournament_path(@tournament), notice: 'Demi-finales supprimées avec succès.'
+    else
+      redirect_to admin_tournament_path(@tournament), alert: 'Impossible de supprimer les demi-finales.'
+    end
+  end
+
+  def delete_finals
+    if @tournament.can_delete_finals?
+      @tournament.delete_finals
+      redirect_to admin_tournament_path(@tournament), notice: 'Finales supprimées avec succès.'
+    else
+      redirect_to admin_tournament_path(@tournament), alert: 'Impossible de supprimer les finales.'
     end
   end
 
