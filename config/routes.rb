@@ -16,6 +16,7 @@ Rails.application.routes.draw do
         delete :delete_finals
         post :create_pools
         patch :generate_pool_games
+        patch :change_status
       end
       resources :teams, only: [:create, :edit, :update, :destroy] do
         member do

@@ -15,6 +15,9 @@ class Tournament < ApplicationRecord
   validates :start_date, :end_date, presence: true
   validate :end_date_after_start_date
 
+  # Default values
+  after_initialize :set_default_status, if: :new_record?
+
   # Scopes
   scope :active, -> { where(status: 'active') }
   scope :completed, -> { where(status: 'completed') }
@@ -330,6 +333,10 @@ class Tournament < ApplicationRecord
   end
 
   private
+
+  def set_default_status
+    self.status ||= 'draft'
+  end
 
   def end_date_after_start_date
     return unless start_date && end_date
