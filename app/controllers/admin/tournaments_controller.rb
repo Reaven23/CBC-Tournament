@@ -1,6 +1,6 @@
 class Admin::TournamentsController < Admin::BaseController
-  before_action :set_tournament, only: [:show, :edit, :update, :destroy, :generate_quarters, :delete_quarters, :generate_semis, :delete_semis, :generate_finals, :delete_finals, :create_pools, :generate_pool_games]
-  before_action :authorize_tournament_management!, only: [:show, :edit, :update, :destroy, :generate_quarters, :delete_quarters, :generate_semis, :delete_semis, :generate_finals, :delete_finals, :create_pools, :generate_pool_games]
+  before_action :set_tournament, only: [:show, :edit, :update, :destroy, :generate_quarters, :delete_quarters, :generate_semis, :delete_semis, :generate_finals, :delete_finals, :create_pools, :generate_pool_games, :change_status]
+  before_action :authorize_tournament_management!, only: [:show, :edit, :update, :destroy, :generate_quarters, :delete_quarters, :generate_semis, :delete_semis, :generate_finals, :delete_finals, :create_pools, :generate_pool_games, :change_status]
 
   def index
     @tournaments = if current_user.super_admin?
@@ -32,7 +32,6 @@ class Admin::TournamentsController < Admin::BaseController
 
   def create
     @tournament = current_user.tournaments.build(tournament_params)
-    @tournament.status = 'draft' # Valeur par défaut
 
     if @tournament.save
       redirect_to admin_tournament_path(@tournament), notice: 'Tournoi créé avec succès.'
@@ -129,6 +128,22 @@ class Admin::TournamentsController < Admin::BaseController
       redirect_to admin_tournament_path(@tournament), notice: 'Finales supprimées avec succès.'
     else
       redirect_to admin_tournament_path(@tournament), alert: 'Impossible de supprimer les finales.'
+    end
+  end
+
+  def change_status
+    new_status = params[:status]
+
+    if %w[draft active completed].include?(new_status)
+      @tournament.update(status: new_status)
+      status_label = case new_status
+                    when 'draft' then 'Brouillon'
+                    when 'active' then 'Actif'
+                    when 'completed' then 'Terminé'
+                    end
+      redirect_to admin_tournament_path(@tournament), notice: "Statut changé en '#{status_label}' avec succès."
+    else
+      redirect_to admin_tournament_path(@tournament), alert: 'Statut invalide.'
     end
   end
 

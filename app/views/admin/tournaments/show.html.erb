@@ -34,6 +34,22 @@
               <% when 'completed' %>
                 <span class="badge badge-info">Terminé</span>
               <% end %>
+
+              <div class="mt-2">
+                <%= form_with url: change_status_admin_tournament_path(@tournament), method: :patch, local: true, class: "d-inline" do |f| %>
+                  <%= f.select :status,
+                      options_for_select([
+                        ['Brouillon', 'draft'],
+                        ['Actif', 'active'],
+                        ['Terminé', 'completed']
+                      ], @tournament.status),
+                      {},
+                      {
+                        class: "form-select form-select-sm d-inline-block w-auto",
+                        onchange: "this.form.submit()"
+                      } %>
+                <% end %>
+              </div>
             </p>
             <p><strong>Équipes :</strong> <%= @teams.count %> / <%= @tournament.max_teams %></p>
             <p><strong>Équipes non assignées :</strong> <%= 12 - @teams.count %></p>
