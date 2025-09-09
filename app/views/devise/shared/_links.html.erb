@@ -1,0 +1,5 @@
+<%- if devise_mapping.recoverable? && controller_name != 'passwords' && controller_name != 'registrations' %>
+  <div class="forgot-password-link">
+    <%= link_to "Mot de passe oublié ?", new_password_path(resource_name), class: "forgot-link" %>
+  </div>
+<% end %>

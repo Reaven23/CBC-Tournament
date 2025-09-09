@@ -1,6 +1,6 @@
 <tr id="game_<%= game.id %>">
   <% if game.pool_game? %>
-    <td>
+    <td class="match-cell">
       <strong><%= game.home_team.name %></strong> vs <strong><%= game.away_team.name %></strong>
     </td>
     <td>
@@ -16,27 +16,29 @@
         <span class="badge bg-warning">Programmé</span>
       <% end %>
     </td>
-    <td>
+    <td class="score-cell">
       <% if game.played? %>
         <strong><%= game.home_score %> - <%= game.away_score %></strong>
       <% else %>
         <span class="text-muted">-</span>
       <% end %>
     </td>
-    <td>
+    <td class="winner-cell">
       <% if game.played? && game.winner %>
-        <span class="badge bg-success"><%= game.winner.name %></span>
+        <span class="badge bg-success winner-name" title="<%= game.winner.name %>"><%= game.winner.name %></span>
       <% elsif game.played? %>
         <span class="badge bg-secondary">Match nul</span>
       <% else %>
         <span class="text-muted">-</span>
       <% end %>
     </td>
-    <td>
+    <td class="referees-cell">
       <% if game.referees.any? %>
-        <% game.referees.each do |referee| %>
-          <span class="badge bg-light text-dark me-1"><%= referee.name %></span>
-        <% end %>
+        <div class="referees-list">
+          <% game.referees.each do |referee| %>
+            <span class="badge bg-light text-dark" title="<%= referee.name %>"><%= referee.name %></span>
+          <% end %>
+        </div>
       <% else %>
         <span class="text-muted">Non assigné</span>
       <% end %>
@@ -59,7 +61,7 @@
         <span class="badge bg-info">3ème place</span>
       <% end %>
     </td>
-    <td>
+    <td class="match-cell">
       <strong><%= game.home_team.name %></strong> vs <strong><%= game.away_team.name %></strong>
     </td>
     <td>
@@ -75,27 +77,29 @@
         <span class="badge bg-warning">Programmé</span>
       <% end %>
     </td>
-    <td>
+    <td class="score-cell">
       <% if game.played? %>
         <strong><%= game.home_score %> - <%= game.away_score %></strong>
       <% else %>
         <span class="text-muted">-</span>
       <% end %>
     </td>
-    <td>
+    <td class="winner-cell">
       <% if game.played? && game.winner %>
-        <span class="badge bg-success"><%= game.winner.name %></span>
+        <span class="badge bg-success winner-name" title="<%= game.winner.name %>"><%= game.winner.name %></span>
       <% elsif game.played? %>
         <span class="badge bg-secondary">Match nul</span>
       <% else %>
         <span class="text-muted">-</span>
       <% end %>
     </td>
-    <td>
+    <td class="referees-cell">
       <% if game.referees.any? %>
-        <% game.referees.each do |referee| %>
-          <span class="badge bg-light text-dark me-1"><%= referee.name %></span>
-        <% end %>
+        <div class="referees-list">
+          <% game.referees.each do |referee| %>
+            <span class="badge bg-light text-dark" title="<%= referee.name %>"><%= referee.name %></span>
+          <% end %>
+        </div>
       <% else %>
         <span class="text-muted">Non assigné</span>
       <% end %>

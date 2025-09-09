@@ -1,0 +1,87 @@
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h2>
+    <i class="fas fa-whistle"></i>
+    Arbitres
+  </h2>
+  <%= link_to new_admin_tournament_referee_path(@tournament), class: "btn btn-primary" do %>
+    <i class="fas fa-plus"></i>
+    Nouvel arbitre
+  <% end %>
+</div>
+
+<div class="card">
+  <div class="card-body p-0">
+    <% if @referees.any? %>
+      <div class="table-responsive">
+        <table class="table table-hover mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>Nom</th>
+              <th>Email</th>
+              <th>Téléphone</th>
+              <th>Matchs</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @referees.each do |referee| %>
+              <tr>
+                <td>
+                  <strong><%= referee.full_name %></strong>
+                </td>
+                <td>
+                  <% if referee.email.present? %>
+                    <%= referee.email %>
+                  <% else %>
+                    <span class="text-muted">-</span>
+                  <% end %>
+                </td>
+                <td>
+                  <% if referee.phone.present? %>
+                    <%= referee.phone %>
+                  <% else %>
+                    <span class="text-muted">-</span>
+                  <% end %>
+                </td>
+                <td>
+                  <span class="badge bg-info">
+                    <%= referee.games_count %> match<%= 's' if referee.games_count != 1 %>
+                  </span>
+                </td>
+                <td>
+                  <div class="btn-group" role="group">
+                    <%= link_to edit_admin_tournament_referee_path(@tournament, referee), class: "btn btn-sm btn-outline-primary" do %>
+                      <i class="fas fa-edit"></i>
+                    <% end %>
+                    <%= link_to admin_tournament_referee_path(@tournament, referee),
+                        data: { turbo_method: :delete, confirm: "Êtes-vous sûr de vouloir supprimer cet arbitre ?" },
+                        class: "btn btn-sm btn-outline-danger" do %>
+                      <i class="fas fa-trash"></i>
+                    <% end %>
+                  </div>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <div class="text-center py-5">
+        <i class="fas fa-whistle fa-3x text-muted mb-3"></i>
+        <h4 class="text-muted">Aucun arbitre</h4>
+        <p class="text-muted">Commencez par ajouter des arbitres pour ce tournoi</p>
+        <%= link_to new_admin_tournament_referee_path(@tournament), class: "btn btn-primary" do %>
+          <i class="fas fa-plus"></i>
+          Ajouter un arbitre
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<div class="mt-3">
+  <%= link_to admin_tournament_path(@tournament), class: "btn btn-secondary" do %>
+    <i class="fas fa-arrow-left"></i>
+    Retour au tournoi
+  <% end %>
+</div>

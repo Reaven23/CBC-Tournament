@@ -24,8 +24,10 @@ Rails.application.routes.draw do
           delete :remove_photo
         end
       end
+      resources :referees, only: [:index, :new, :create, :edit, :update, :destroy]
       resources :games, only: [:edit, :update]
     end
+    resources :users, only: [:index, :new, :create]
   end
 
   # Public tournament routes
