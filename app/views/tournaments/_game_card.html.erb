@@ -1,0 +1,60 @@
+<%
+  game_type_label ||= case game.game_type
+                      when 'pool' then 'Match de poule'
+                      when 'quarter' then 'Quart de finale'
+                      when 'semi' then 'Demi-finale'
+                      when 'final' then 'Finale'
+                      when 'third_place' then 'Petite finale'
+                      else game.game_type.humanize
+                      end
+%>
+
+<div class="game-card <%= 'knockout-game' if game.knockout_game? %>">
+  <div class="game-header">
+    <div class="game-info">
+      <span class="game-type"><%= game_type_label %></span>
+      <% if game.pool %>
+        <span class="game-pool">
+          <i class="fas fa-layer-group me-1"></i>
+          <%= game.pool.name %>
+        </span>
+      <% end %>
+      <% if game.game_start? %>
+        <span class="game-time">
+          <i class="fas fa-clock me-1"></i>
+          <%= game.formatted_game_start %>
+        </span>
+      <% end %>
+      <% if game.court_number? %>
+        <span class="game-court">
+          <i class="fas fa-map-marker-alt me-1"></i>
+          Terrain <%= game.court_number %>
+        </span>
+      <% end %>
+    </div>
+    <div class="game-status">
+      <span class="badge status-<%= game.status %>">
+        <%= game.status == 'played' ? 'Terminé' : 'Programmé' %>
+      </span>
+    </div>
+  </div>
+
+  <div class="game-teams">
+    <div class="team team-home <%= 'winner' if game.winner == game.home_team %>">
+      <div class="team-name"><%= game.home_team.name %></div>
+      <div class="team-score"><%= game.home_score || '-' %></div>
+    </div>
+    <div class="vs">VS</div>
+    <div class="team team-away <%= 'winner' if game.winner == game.away_team %>">
+      <div class="team-name"><%= game.away_team.name %></div>
+      <div class="team-score"><%= game.away_score || '-' %></div>
+    </div>
+  </div>
+
+  <% if game.referees.any? %>
+    <div class="game-referees">
+      <i class="fas fa-whistle me-1"></i>
+      <span>Arbitres: <%= game.referees.map(&:name).join(', ') %></span>
+    </div>
+  <% end %>
+</div>

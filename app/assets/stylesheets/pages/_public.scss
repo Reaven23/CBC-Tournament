@@ -6,22 +6,21 @@
 .tournament-header {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
-  padding: 1.5rem 0;
+  padding: 2rem 0;
 
   .tournament-title {
     font-size: 1.75rem;
     font-weight: 700;
-    margin: 0;
+    margin: 0 0 1rem 0;
     line-height: 1.2;
   }
 
-  .tournament-meta {
+  .tournament-info {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-    margin-top: 1rem;
 
-    .meta-item {
+    .info-item {
       display: flex;
       align-items: center;
       font-size: 0.9rem;
@@ -30,6 +29,8 @@
       i {
         width: 16px;
         text-align: center;
+        margin-right: 0.5rem;
+        color: #ffc107;
       }
     }
   }
@@ -96,6 +97,92 @@
     i {
       color: #17a2b8;
     }
+  }
+}
+
+// Pools Accordion
+.pools-accordion {
+  .pool-accordion-item {
+    background: white;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .pool-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+
+    &:hover {
+      background: linear-gradient(135deg, #138496 0%, #117a8b 100%);
+    }
+
+    .pool-info {
+      flex: 1;
+
+      .pool-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin: 0 0 0.5rem 0;
+        color: white;
+
+        i {
+          color: #ffc107;
+        }
+      }
+
+      .pool-stats {
+        display: flex;
+        gap: 1rem;
+
+        span {
+          font-size: 0.9rem;
+          opacity: 0.9;
+
+          i {
+            color: #ffc107;
+          }
+        }
+      }
+    }
+
+    .pool-toggle {
+      font-size: 1.2rem;
+      transition: transform 0.3s ease;
+
+      &.collapsed {
+        transform: rotate(-90deg);
+      }
+    }
+  }
+
+  .pool-content {
+    padding: 0;
+
+    .games-list {
+      background: white;
+    }
+  }
+
+  // Animation pour l'icône de chevron
+  .pool-header[aria-expanded="true"] .pool-toggle {
+    transform: rotate(180deg);
+  }
+
+  .pool-header[aria-expanded="false"] .pool-toggle {
+    transform: rotate(0deg);
   }
 }
 
@@ -287,31 +374,50 @@
 
   .standings-header {
     display: grid;
-    grid-template-columns: 40px 1fr 40px 40px 40px 40px 50px;
-    gap: 0.5rem;
-    padding: 0.75rem 1rem;
+    grid-template-columns: 35px 55px 35px 35px 35px 35px 45px;
+    gap: 0.4rem;
+    padding: 0.6rem 0.8rem;
     background: #f8f9fa;
     font-weight: 600;
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     color: #495057;
     border-bottom: 1px solid #dee2e6;
+    align-items: center;
 
     .pos {
+      text-align: center;
+    }
+
+    .team {
       text-align: center;
     }
 
     .stats {
       text-align: center;
     }
+
+    @media (min-width: 768px) {
+      grid-template-columns: 50px 80px 50px 50px 50px 50px 50px 50px 60px;
+      gap: 0.75rem;
+      padding: 1rem 1.5rem;
+      font-size: 0.8rem;
+    }
   }
 
   .standings-row {
     display: grid;
-    grid-template-columns: 40px 1fr 40px 40px 40px 40px 50px;
-    gap: 0.5rem;
-    padding: 0.75rem 1rem;
+    grid-template-columns: 35px 55px 35px 35px 35px 35px 45px;
+    gap: 0.4rem;
+    padding: 0.6rem 0.8rem;
     border-bottom: 1px solid #f1f3f4;
     transition: background-color 0.2s ease;
+    align-items: center;
+
+    @media (min-width: 768px) {
+      grid-template-columns: 50px 80px 50px 50px 50px 50px 50px 50px 60px;
+      gap: 0.75rem;
+      padding: 1rem 1.5rem;
+    }
 
     &:last-child {
       border-bottom: none;
@@ -325,23 +431,81 @@
       text-align: center;
       font-weight: 600;
       color: #495057;
+      font-size: 1rem;
     }
 
     .team {
+      display: flex;
+      justify-content: center;
+
       .team-link {
-        color: #007bff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #495057;
         text-decoration: none;
-        font-weight: 500;
+        transition: transform 0.2s ease;
 
         &:hover {
-          text-decoration: underline;
+          transform: scale(1.1);
+          text-decoration: none;
+        }
+
+        .team-logo {
+          .team-photo {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid #e9ecef;
+            transition: border-color 0.2s ease;
+          }
+
+          .team-photo-placeholder {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+            font-size: 0.8rem;
+            transition: background-color 0.2s ease;
+          }
+        }
+      }
+
+      &:hover .team-link .team-logo {
+        .team-photo {
+          border-color: #007bff;
+        }
+
+        .team-photo-placeholder {
+          background: #007bff;
+          color: white;
         }
       }
     }
 
     .stats {
       text-align: center;
-      font-size: 0.9rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+
+      @media (min-width: 768px) {
+        font-size: 0.95rem;
+      }
+
+      .points-scored {
+        color: #28a745;
+        font-weight: 600;
+      }
+
+      .points-conceded {
+        color: #dc3545;
+        font-weight: 600;
+      }
     }
   }
 }
@@ -366,33 +530,224 @@
 
 // Team Header
 .team-header {
-  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  position: relative;
+  min-height: 200px;
   color: white;
-  padding: 1.5rem 0;
+  padding: 2rem 0;
+  overflow: hidden;
 
-  .team-title {
-    font-size: 1.75rem;
-    font-weight: 700;
-    margin: 0;
-    line-height: 1.2;
-  }
+  .team-header-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
 
-  .team-tournament {
-    margin: 0.5rem 0 0 0;
-    font-size: 0.9rem;
-    opacity: 0.9;
+    .team-logo-bg {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      filter: blur(8px) brightness(0.3);
+      transform: scale(1.1);
+    }
 
-    i {
-      color: #ffc107;
+    .team-header-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.4) 100%);
+      z-index: 2;
     }
   }
 
-  .pool-badge {
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.3);
+  .container-fluid {
+    position: relative;
+    z-index: 3;
+  }
+
+  .team-nav-fixed {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 4;
+    padding: 1rem 0;
+
+    .btn-back {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50px;
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+
+      &:hover {
+        background: rgba(0, 0, 0, 0.6);
+        border-color: rgba(255, 255, 255, 0.5);
+        color: white;
+        text-decoration: none;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+      }
+
+      i {
+        font-size: 0.8rem;
+      }
+    }
+
+    .pool-info {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.6rem 1.2rem;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 25px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: white;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+
+      i {
+        color: #ffc107;
+        font-size: 0.8rem;
+      }
+    }
+  }
+
+  .team-info {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding-top: 4rem;
+
+    .team-logo-main {
+      flex-shrink: 0;
+
+      .team-photo {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      }
+
+      .team-photo-placeholder {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 4px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+
+        i {
+          font-size: 2rem;
+          color: rgba(255, 255, 255, 0.8);
+        }
+      }
+    }
+
+    .team-details {
+      flex: 1;
+
+      .team-title {
+        font-size: 2rem;
+        font-weight: 700;
+        margin: 0 0 0.5rem 0;
+        line-height: 1.2;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+      }
+
+      .team-tournament {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin: 0;
+        font-size: 1rem;
+        opacity: 0.9;
+
+        i {
+          color: #ffc107;
+          font-size: 0.9rem;
+        }
+      }
+    }
+  }
+
+  // Fallback si pas de photo
+  &:not(.has-photo) {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+
+    .team-header-background {
+      display: none;
+    }
+  }
+
+  // Responsive
+  @media (max-width: 768px) {
+    min-height: 180px;
+    padding: 1.5rem 0;
+
+    .team-nav-fixed {
+      padding: 0.75rem 0;
+
+      .btn-back {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.85rem;
+        background: rgba(0, 0, 0, 0.5);
+        border-color: rgba(255, 255, 255, 0.4);
+      }
+
+      .pool-info {
+        padding: 0.5rem 1rem;
+        font-size: 0.8rem;
+        background: rgba(0, 0, 0, 0.5);
+        border-color: rgba(255, 255, 255, 0.4);
+      }
+    }
+
+    .team-info {
+      padding-top: 3rem;
+      gap: 1rem;
+
+      .team-logo-main {
+        .team-photo,
+        .team-photo-placeholder {
+          width: 60px;
+          height: 60px;
+        }
+      }
+
+      .team-details {
+        .team-title {
+          font-size: 1.5rem;
+        }
+
+        .team-tournament {
+          font-size: 0.9rem;
+        }
+      }
+    }
   }
 }
+
 
 // Team Stats
 .team-stats {
@@ -625,7 +980,7 @@
       font-size: 2.25rem;
     }
 
-    .tournament-meta {
+    .tournament-info {
       flex-direction: row;
       gap: 2rem;
     }
@@ -645,7 +1000,22 @@
   .standings-table {
     .standings-header,
     .standings-row {
-      grid-template-columns: 50px 1fr 60px 60px 60px 60px 70px;
+      gap: 1.25rem;
+      padding: 1.25rem 2rem;
+    }
+
+    .standings-row {
+      .team {
+        .team-link {
+          .team-logo {
+            .team-photo,
+            .team-photo-placeholder {
+              width: 50px;
+              height: 50px;
+            }
+          }
+        }
+      }
     }
   }
 
@@ -685,6 +1055,27 @@
       }
     }
   }
+
+  // Pools accordion - better spacing on tablet
+  .pools-accordion {
+    .pool-header {
+      padding: 1.75rem;
+
+      .pool-info {
+        .pool-title {
+          font-size: 1.4rem;
+        }
+
+        .pool-stats {
+          gap: 1.5rem;
+
+          span {
+            font-size: 1rem;
+          }
+        }
+      }
+    }
+  }
 }
 
 // Desktop and up
@@ -698,7 +1089,22 @@
   .standings-table {
     .standings-header,
     .standings-row {
-      grid-template-columns: 60px 1fr 80px 80px 80px 80px 90px;
+      gap: 1.75rem;
+      padding: 1.5rem 2.5rem;
+    }
+
+    .standings-row {
+      .team {
+        .team-link {
+          .team-logo {
+            .team-photo,
+            .team-photo-placeholder {
+              width: 60px;
+              height: 60px;
+            }
+          }
+        }
+      }
     }
   }
 
@@ -729,6 +1135,27 @@
         .team-pool {
           font-size: 0.9rem;
           padding: 0.3rem 0.8rem;
+        }
+      }
+    }
+  }
+
+  // Pools accordion - better spacing on desktop
+  .pools-accordion {
+    .pool-header {
+      padding: 2rem;
+
+      .pool-info {
+        .pool-title {
+          font-size: 1.5rem;
+        }
+
+        .pool-stats {
+          gap: 2rem;
+
+          span {
+            font-size: 1.1rem;
+          }
         }
       }
     }

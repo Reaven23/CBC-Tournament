@@ -32,7 +32,7 @@ class Pool < ApplicationRecord
   end
 
   def standings
-    # Règles de classement :
+    # Règles de classement basées uniquement sur les matchs de poule :
     # 1. Nombre de points (2 pour victoire, 1 pour défaite)
     # 2. En cas d'égalité : confrontation directe (si applicable)
     # 3. Si 3+ équipes à égalité : goal average (différence de buts)
@@ -40,7 +40,7 @@ class Pool < ApplicationRecord
     # Note: Si goal average ET attaque sont égaux, la défense sera forcément égale aussi
 
     teams.includes(:won_games).sort do |team_a, team_b|
-      # 1. Comparaison par points
+      # 1. Comparaison par points (déjà basés sur les matchs de poule)
       points_diff = team_b.points - team_a.points
       next points_diff unless points_diff == 0
 

@@ -1,0 +1,15 @@
+<% final_games = @knockout_games.where(game_type: ['final', 'third_place']) %>
+<% if final_games.any? %>
+  <div class="games-list">
+    <% final_games.each do |game| %>
+      <% game_type_label = game.game_type == 'final' ? 'Finale' : 'Petite finale' %>
+      <%= render 'game_card', game: game, game_type_label: game_type_label %>
+    <% end %>
+  </div>
+<% else %>
+  <div class="no-games">
+    <i class="fas fa-crown fa-3x text-muted mb-3"></i>
+    <h4 class="text-muted">Aucune finale</h4>
+    <p class="text-muted">Les finales seront générées après les demi-finales.</p>
+  </div>
+<% end %>

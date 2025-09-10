@@ -1,0 +1,14 @@
+<% quarter_games = @knockout_games.where(game_type: 'quarter') %>
+<% if quarter_games.any? %>
+  <div class="games-list">
+    <% quarter_games.each do |game| %>
+      <%= render 'game_card', game: game, game_type_label: 'Quart de finale' %>
+    <% end %>
+  </div>
+<% else %>
+  <div class="no-games">
+    <i class="fas fa-trophy fa-3x text-muted mb-3"></i>
+    <h4 class="text-muted">Aucun quart de finale</h4>
+    <p class="text-muted">Les quarts de finale seront générés après la phase de poule.</p>
+  </div>
+<% end %>

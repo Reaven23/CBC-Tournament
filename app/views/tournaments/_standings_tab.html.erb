@@ -1,0 +1,68 @@
+<% if @pool_standings.any? %>
+  <% @pool_standings.each do |pool, standings| %>
+    <div class="standings-section mb-4">
+      <h3 class="standings-title">
+        <i class="fas fa-list-ol me-2"></i>
+        <%= pool.name %>
+      </h3>
+
+      <div class="standings-table">
+        <div class="standings-header">
+          <div class="pos">#</div>
+          <div class="team">Équipe</div>
+          <div class="stats d-none d-md-block">MJ</div>
+          <div class="stats">V</div>
+          <div class="stats">D</div>
+          <div class="stats d-none d-md-block">Pts</div>
+          <div class="stats">PM</div>
+          <div class="stats">PE</div>
+          <div class="stats">+/-</div>
+        </div>
+
+        <% standings.each_with_index do |team, index| %>
+          <div class="standings-row">
+            <div class="pos"><%= index + 1 %></div>
+            <div class="team">
+              <%= link_to tournament_team_path(@tournament, team), class: "team-link", title: team.name do %>
+                <div class="team-logo">
+                  <% if team.photo.attached? %>
+                    <%= image_tag team.photo, alt: team.name, class: "team-photo" %>
+                  <% else %>
+                    <div class="team-photo-placeholder">
+                      <i class="fas fa-basketball-ball"></i>
+                    </div>
+                  <% end %>
+                </div>
+              <% end %>
+            </div>
+            <div class="stats d-none d-md-block"><%= team.pool_played_games.count %></div>
+            <div class="stats"><%= team.wins %></div>
+            <div class="stats"><%= team.losses %></div>
+            <div class="stats d-none d-md-block"><%= team.points %></div>
+            <div class="stats">
+              <span class="points-scored">
+                <%= team.goals_scored %>
+              </span>
+            </div>
+            <div class="stats">
+              <span class="points-conceded">
+                <%= team.goals_conceded %>
+              </span>
+            </div>
+            <div class="stats">
+              <span class="<%= team.goal_difference >= 0 ? 'text-success' : 'text-danger' %>">
+                <%= team.goal_difference >= 0 ? '+' : '' %><%= team.goal_difference %>
+              </span>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+<% else %>
+  <div class="no-standings">
+    <i class="fas fa-list-ol fa-3x text-muted mb-3"></i>
+    <h4 class="text-muted">Aucun classement disponible</h4>
+    <p class="text-muted">Les classements seront disponibles une fois les matchs commencés.</p>
+  </div>
+<% end %>

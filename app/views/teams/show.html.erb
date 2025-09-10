@@ -1,26 +1,53 @@
 <!-- Header Section -->
-<section class="team-header">
+<section class="team-header <%= 'has-photo' if @team.photo.attached? %>">
+  <div class="team-header-background">
+    <% if @team.photo.attached? %>
+      <%= image_tag @team.photo, alt: @team.name, class: "team-logo-bg" %>
+    <% end %>
+    <div class="team-header-overlay"></div>
+  </div>
+
+  <!-- Navigation fixe en haut -->
+  <div class="team-nav-fixed">
+    <div class="container-fluid px-3">
+      <div class="d-flex align-items-center justify-content-between">
+        <%= link_to tournament_path(@tournament), class: "btn-back" do %>
+          <i class="fas fa-arrow-left"></i>
+          <span>Retour au tournoi</span>
+        <% end %>
+
+        <% if @team.pool %>
+          <div class="pool-info">
+            <i class="fas fa-layer-group"></i>
+            <span><%= @team.pool.name %></span>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Team Info -->
   <div class="container-fluid px-3">
     <div class="row">
       <div class="col-12">
-        <div class="d-flex align-items-center justify-content-between mb-3">
-          <%= link_to tournament_path(@tournament), class: "btn btn-outline-light btn-sm" do %>
-            <i class="fas fa-arrow-left me-1"></i>
-            Retour au tournoi
-          <% end %>
-          <% if @team.pool %>
-            <span class="badge pool-badge">
-              <%= @team.pool.name %>
-            </span>
-          <% end %>
-        </div>
-
         <div class="team-info">
-          <h1 class="team-title mb-2"><%= @team.name %></h1>
-          <p class="team-tournament">
-            <i class="fas fa-trophy me-1"></i>
-            <%= @tournament.name %>
-          </p>
+          <div class="team-logo-main">
+            <% if @team.photo.attached? %>
+              <%= image_tag @team.photo, alt: @team.name, class: "team-photo" %>
+            <% else %>
+              <div class="team-photo-placeholder">
+                <i class="fas fa-basketball-ball"></i>
+              </div>
+            <% end %>
+          </div>
+
+          <div class="team-details">
+            <h1 class="team-title"><%= @team.name %></h1>
+            <p class="team-tournament">
+              <i class="fas fa-trophy"></i>
+              <span><%= @tournament.name %></span>
+            </p>
+          </div>
         </div>
       </div>
     </div>
@@ -49,11 +76,11 @@
       </div>
       <div class="stat-item">
         <div class="stat-value text-info"><%= @stats[:goals_scored] %></div>
-        <div class="stat-label">Buts marqués</div>
+        <div class="stat-label">Points marqués</div>
       </div>
       <div class="stat-item">
         <div class="stat-value text-warning"><%= @stats[:goals_conceded] %></div>
-        <div class="stat-label">Buts encaissés</div>
+        <div class="stat-label">Points encaissés</div>
       </div>
     </div>
   </div>
