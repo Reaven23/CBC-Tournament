@@ -34,6 +34,7 @@ Rails.application.routes.draw do
   # Public tournament routes
   resources :tournaments, only: [:index, :show] do
     resources :games, only: [:show]
+    resources :teams, only: [:show]
   end
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
