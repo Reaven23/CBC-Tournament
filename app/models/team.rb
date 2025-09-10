@@ -31,8 +31,16 @@ class Team < ApplicationRecord
     won_games.where(status: 'played').count
   end
 
+  def wins_pool
+    won_games.where(status: 'played', game_type: 'pool').count
+  end
+
   def losses
     total_games - wins
+  end
+
+  def losses_pool
+    games.where(status: 'played', game_type: 'pool').count - wins_pool
   end
 
   def points
@@ -41,7 +49,7 @@ class Team < ApplicationRecord
   end
 
   def win_loss_record
-    "#{wins} - #{losses}"
+    "#{wins_pool} - #{losses_pool}"
   end
 
   # Méthodes pour le classement
