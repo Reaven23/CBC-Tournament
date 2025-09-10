@@ -28,7 +28,8 @@ class Team < ApplicationRecord
   end
 
   def wins
-    won_games.where(status: 'played').count
+    # Seuls les matchs de poule comptent pour les victoires
+    pool_wins
   end
 
   def wins_pool
@@ -36,7 +37,8 @@ class Team < ApplicationRecord
   end
 
   def losses
-    total_games - wins
+    # Seuls les matchs de poule comptent pour les défaites
+    pool_losses
   end
 
   def losses_pool
@@ -45,41 +47,79 @@ class Team < ApplicationRecord
 
   def points
     # 2 points pour une victoire, 1 point pour une défaite
-    (wins * 2) + (losses * 1)
+    # Seuls les matchs de poule comptent pour les points
+    (pool_wins * 2) + (pool_losses * 1)
   end
 
   def win_loss_record
     "#{wins_pool} - #{losses_pool}"
   end
 
-  # Méthodes pour le classement
-  def goals_scored
-    played_games.sum do |game|
+  # Méthodes pour les matchs de poule uniquement
+  def pool_games
+    games.where(game_type: 'pool')
+  end
+
+  def pool_played_games
+    pool_games.where(status: 'played')
+  end
+
+  def pool_wins
+    pool_played_games.count { |game| game.winner_id == id }
+  end
+
+  def pool_losses
+    pool_played_games.count - pool_wins
+  end
+
+  def pool_points
+    # 2 points pour une victoire, 1 point pour une défaite
+    (pool_wins * 2) + (pool_losses * 1)
+  end
+
+  def pool_goals_scored
+    pool_played_games.sum do |game|
       if game.home_team_id == id
         game.home_score || 0
       else
         game.away_score || 0
       end
     end
+  end
+
+  def pool_goals_conceded
+    pool_played_games.sum do |game|
+      if game.home_team_id == id
+        game.away_score || 0
+      else
+        game.home_score || 0
+      end
+    end
+  end
+
+  def pool_goal_difference
+    pool_goals_scored - pool_goals_conceded
+  end
+
+  # Méthodes pour le classement (matchs de poule uniquement)
+  def goals_scored
+    # Seuls les matchs de poule comptent pour les buts marqués
+    pool_goals_scored
   end
 
   def goals_conceded
-    played_games.sum do |game|
-      if game.home_team_id == id
-        game.away_score || 0
-      else
-        game.home_score || 0
-      end
-    end
+    # Seuls les matchs de poule comptent pour les buts encaissés
+    pool_goals_conceded
   end
 
   def goal_difference
-    goals_scored - goals_conceded
+    # Seuls les matchs de poule comptent pour la différence de buts
+    pool_goal_difference
   end
 
-  # Méthode pour vérifier la confrontation directe
+  # Méthode pour vérifier la confrontation directe (matchs de poule uniquement)
   def head_to_head_victory?(other_team)
-    direct_games = played_games.where(
+    direct_games = pool_played_games.where(
       "(home_team_id = ? AND away_team_id = ?) OR (home_team_id = ? AND away_team_id = ?)",
       id, other_team.id, other_team.id, id
     )

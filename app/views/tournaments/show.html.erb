@@ -1,0 +1,65 @@
+<!-- Header Section -->
+<section class="tournament-header">
+  <div class="container-fluid px-3">
+    <div class="row">
+      <div class="col-12">
+        <h1 class="tournament-title"><%= @tournament.name %></h1>
+
+        <div class="tournament-info">
+          <div class="info-item">
+            <i class="fas fa-calendar-alt"></i>
+            <span><%= @tournament.start_date&.strftime("%d/%m/%Y") %> - <%= @tournament.end_date&.strftime("%d/%m/%Y") %></span>
+          </div>
+          <div class="info-item">
+            <i class="fas fa-users"></i>
+            <span><%= @tournament.teams.count %> équipes</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Navigation Tabs -->
+<section class="tournament-nav">
+  <div class="container-fluid px-3">
+    <div class="nav nav-tabs tournament-tabs" role="tablist">
+      <button class="nav-link active" id="teams-tab" data-bs-toggle="tab" data-bs-target="#teams" type="button" role="tab">
+        <i class="fas fa-users me-1"></i>
+        Équipes
+      </button>
+      <button class="nav-link" id="matches-tab" data-bs-toggle="tab" data-bs-target="#matches" type="button" role="tab">
+        <i class="fas fa-basketball-ball me-1"></i>
+        Matchs
+      </button>
+      <button class="nav-link" id="standings-tab" data-bs-toggle="tab" data-bs-target="#standings" type="button" role="tab">
+        <i class="fas fa-list-ol me-1"></i>
+        Classements
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- Tab Content -->
+<section class="tournament-content">
+  <div class="container-fluid px-3">
+    <div class="tab-content" id="tournamentTabContent">
+
+      <!-- Teams Tab -->
+      <div class="tab-pane fade show active" id="teams" role="tabpanel">
+        <%= render 'teams_tab' %>
+      </div>
+
+      <!-- Matches Tab -->
+      <div class="tab-pane fade" id="matches" role="tabpanel">
+        <%= render 'matches_tab' %>
+      </div>
+
+      <!-- Standings Tab -->
+      <div class="tab-pane fade" id="standings" role="tabpanel">
+        <%= render 'standings_tab' %>
+      </div>
+
+    </div>
+  </div>
+</section>

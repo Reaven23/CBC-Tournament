@@ -1,0 +1,45 @@
+<% if @games_by_pool.any? %>
+  <div class="pools-accordion">
+    <% @games_by_pool.each do |pool, games| %>
+      <div class="pool-accordion-item">
+        <div class="pool-header" data-bs-toggle="collapse" data-bs-target="#pool-<%= pool.id %>" aria-expanded="false" aria-controls="pool-<%= pool.id %>">
+          <div class="pool-info">
+            <h3 class="pool-title">
+              <i class="fas fa-layer-group me-2"></i>
+              <%= pool.name %>
+            </h3>
+            <div class="pool-stats">
+              <span class="games-count">
+                <i class="fas fa-basketball-ball me-1"></i>
+                <%= games.count %> match<%= 's' if games.count > 1 %>
+              </span>
+              <span class="played-count">
+                <i class="fas fa-check-circle me-1"></i>
+                <%= games.count { |g| g.status == 'played' } %> joué<%= 's' if games.count { |g| g.status == 'played' } > 1 %>
+              </span>
+            </div>
+          </div>
+          <div class="pool-toggle">
+            <i class="fas fa-chevron-down"></i>
+          </div>
+        </div>
+
+        <div class="collapse" id="pool-<%= pool.id %>">
+          <div class="pool-content">
+            <div class="games-list">
+              <% games.each do |game| %>
+                <%= render 'game_card', game: game %>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% else %>
+  <div class="no-games">
+    <i class="fas fa-layer-group fa-3x text-muted mb-3"></i>
+    <h4 class="text-muted">Aucun match de poule</h4>
+    <p class="text-muted">Les matchs de poule seront bientôt disponibles.</p>
+  </div>
+<% end %>

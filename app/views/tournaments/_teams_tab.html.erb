@@ -1,0 +1,32 @@
+<% if @tournament.teams.any? %>
+  <div class="teams-list">
+    <% @tournament.teams.includes(:pool).each do |team| %>
+      <%= link_to tournament_team_path(@tournament, team), class: "team-row" do %>
+        <div class="team-logo">
+          <% if team.photo.attached? %>
+            <%= image_tag team.photo, alt: team.name, class: "team-photo" %>
+          <% else %>
+            <div class="team-photo-placeholder">
+              <i class="fas fa-basketball-ball"></i>
+            </div>
+          <% end %>
+        </div>
+        <div class="team-info">
+          <div class="team-name"><%= team.name %></div>
+          <% if team.pool %>
+            <div class="team-pool"><%= team.pool.name %></div>
+          <% end %>
+        </div>
+        <div class="team-arrow">
+          <i class="fas fa-chevron-right"></i>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+<% else %>
+  <div class="no-teams">
+    <i class="fas fa-users fa-3x text-muted mb-3"></i>
+    <h4 class="text-muted">Aucune équipe</h4>
+    <p class="text-muted">Les équipes seront bientôt ajoutées au tournoi.</p>
+  </div>
+<% end %>
