@@ -1,10 +1,47 @@
 <!DOCTYPE html>
 <html lang="fr">
   <head>
-    <title>TournamentGo - Gestion de tournois de basketball</title>
+    <title><%= page_title(@page_title) %></title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="<%= meta_description(@meta_description) %>">
+    <meta name="keywords" content="<%= meta_keywords(@meta_keywords) %>">
+    <meta name="author" content="TournamentGo">
+    <meta name="robots" content="index, follow">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="<%= canonical_url(@canonical_url) %>">
+    <meta property="og:title" content="<%= og_title(@og_title) %>">
+    <meta property="og:description" content="<%= og_description(@og_description) %>">
+    <meta property="og:image" content="<%= og_image(@og_image) %>">
+    <meta property="og:site_name" content="TournamentGo">
+    <meta property="og:locale" content="fr_FR">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="<%= twitter_card_type %>">
+    <meta property="twitter:url" content="<%= canonical_url(@canonical_url) %>">
+    <meta property="twitter:title" content="<%= og_title(@og_title) %>">
+    <meta property="twitter:description" content="<%= og_description(@og_description) %>">
+    <meta property="twitter:image" content="<%= og_image(@og_image) %>">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="<%= canonical_url(@canonical_url) %>">
+
+    <!-- Structured Data -->
+    <% if @structured_data.present? %>
+      <script type="application/ld+json">
+        <%= @structured_data %>
+      </script>
+    <% end %>
+
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
+
+    <!-- Favicon -->
+    <%= favicon_link_tag "favicon.ico" %>
+    <%= favicon_link_tag "favicon-32x32.png", rel: "icon", type: "image/png", sizes: "32x32" %>
+    <%= favicon_link_tag "favicon-48x48.png", rel: "icon", type: "image/png", sizes: "48x48" %>
+    <%= favicon_link_tag "favicon-64x64.png", rel: "icon", type: "image/png", sizes: "64x64" %>
 
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
@@ -17,8 +54,8 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
       <div class="container">
-        <%= link_to root_path, class: "navbar-brand" do %>
-          <i class="fas fa-basketball-ball me-2"></i>
+        <%= link_to root_path, class: "navbar-brand d-flex align-items-center" do %>
+          <%= image_tag "logo.png", alt: "TournamentGo", class: "navbar-logo me-2" %>
           <strong>TournamentGo</strong>
         <% end %>
 

@@ -1315,6 +1315,24 @@ footer {
   }
 }
 
+// ===== NAVBAR LOGO =====
+
+.navbar-logo {
+  height: 78px;
+  width: auto;
+  object-fit: contain;
+
+  // Mobile - légèrement plus petit
+  @media (max-width: 768px) {
+    height: 68px;
+  }
+
+  // Desktop - plus grand
+  @media (min-width: 769px) {
+    height: 78px;
+  }
+}
+
 // ===== UTILITY CLASSES =====
 
 .text-success { color: #28a745 !important; }
