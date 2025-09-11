@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Page d'accueil -->
+  <url>
+    <loc><%= root_url %></loc>
+    <lastmod><%= Date.current.iso8601 %></lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- Page des tournois -->
+  <url>
+    <loc><%= tournaments_url %></loc>
+    <lastmod><%= Date.current.iso8601 %></lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Tournois individuels -->
+  <% Tournament.where(status: ['active', 'completed']).find_each do |tournament| %>
+    <url>
+      <loc><%= tournament_url(tournament) %></loc>
+      <lastmod><%= tournament.updated_at.iso8601 %></lastmod>
+      <changefreq>daily</changefreq>
+      <priority>0.8</priority>
+    </url>
+
+    <!-- Équipes du tournoi -->
+    <% tournament.teams.find_each do |team| %>
+      <url>
+        <loc><%= team_url(team) %></loc>
+        <lastmod><%= team.updated_at.iso8601 %></lastmod>
+        <changefreq>daily</changefreq>
+        <priority>0.7</priority>
+      </url>
+    <% end %>
+  <% end %>
+</urlset>

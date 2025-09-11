@@ -4,7 +4,7 @@
       <%= link_to tournament_team_path(@tournament, team), class: "team-row" do %>
         <div class="team-logo">
           <% if team.photo.attached? %>
-            <%= image_tag team.photo, alt: team.name, class: "team-photo" %>
+            <%= cl_image_tag team.photo.key, alt: team.name, class: "team-photo" %>
           <% else %>
             <div class="team-photo-placeholder">
               <i class="fas fa-basketball-ball"></i>
