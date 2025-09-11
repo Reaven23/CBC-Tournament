@@ -27,16 +27,7 @@ module SeoHelper
   end
 
   def og_image(image_url = nil)
-    if image_url.present?
-      image_url
-    else
-      # Utiliser Cloudinary pour optimiser l'image Open Graph
-      if Rails.env.production?
-        "https://res.cloudinary.com/#{ENV['CLOUDINARY_CLOUD_NAME']}/image/upload/w_1200,h_630,c_fill,q_auto,f_auto/logo.png"
-      else
-        asset_url("logo.png")
-      end
-    end
+    image_url || asset_url("logo.png")
   end
 
   def twitter_card_type
