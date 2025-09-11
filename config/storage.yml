@@ -28,6 +28,11 @@ local:
 #   storage_access_key: <%= Rails.application.credentials.dig(:azure_storage, :storage_access_key) %>
 #   container: your_container_name-<%= Rails.env %>
 
+# Cloudinary configuration
+cloudinary:
+  service: Cloudinary
+  folder: <%= Rails.env %>
+
 # mirror:
 #   service: Mirror
 #   primary: local
