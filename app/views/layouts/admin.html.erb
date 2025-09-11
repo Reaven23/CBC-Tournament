@@ -48,6 +48,11 @@
               <i class="fas fa-users"></i>
               Utilisateurs
             <% end %>
+
+            <%= link_to admin_notifications_path, class: "nav-link #{'active' if controller_name == 'notifications'}" do %>
+              <i class="fas fa-bell"></i>
+              Notifications
+            <% end %>
           <% end %>
         </div>
 

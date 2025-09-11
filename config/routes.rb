@@ -29,6 +29,7 @@ Rails.application.routes.draw do
       resources :games, only: [:edit, :update]
     end
     resources :users, only: [:index, :new, :create]
+    resources :notifications, only: [:index, :show, :destroy]
   end
 
   # Public tournament routes
@@ -36,6 +37,9 @@ Rails.application.routes.draw do
     resources :games, only: [:show]
     resources :teams, only: [:show]
   end
+
+  # Contact form
+  post 'contact', to: 'notifications#create'
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.
