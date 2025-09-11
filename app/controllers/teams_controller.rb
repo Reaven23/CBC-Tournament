@@ -22,5 +22,14 @@ class TeamsController < ApplicationController
       goal_difference: @team.goal_difference,
       points: @team.points
     }
+
+    # SEO pour la page de l'équipe
+    @page_title = "#{@team.name} - #{@tournament.name}"
+    @meta_description = "Découvrez l'équipe #{@team.name} du tournoi #{@tournament.name}. #{@stats[:wins]} victoires, #{@stats[:losses]} défaites. #{@stats[:goals_scored]} points marqués, #{@stats[:goals_conceded]} points encaissés. Suivez tous les matchs et statistiques."
+    @meta_keywords = [@team.name, @tournament.name, "équipe", "basketball", "statistiques", "matchs", "victoires", "défaites"]
+    @og_title = "#{@team.name} - #{@tournament.name} | TournamentGo"
+    @og_description = "Découvrez l'équipe #{@team.name} du tournoi #{@tournament.name}. Statistiques, matchs et résultats en temps réel."
+    @canonical_url = team_url(@team)
+    @structured_data = team_json_ld(@team, @tournament)
   end
 end
