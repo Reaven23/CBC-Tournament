@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_09_08_151454) do
+ActiveRecord::Schema[7.1].define(version: 2025_09_11_075422) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -74,6 +74,14 @@ ActiveRecord::Schema[7.1].define(version: 2025_09_08_151454) do
     t.index ["pool_id"], name: "index_games_on_pool_id"
     t.index ["tournament_id"], name: "index_games_on_tournament_id"
     t.index ["winner_id"], name: "index_games_on_winner_id"
+  end
+
+  create_table "notifications", force: :cascade do |t|
+    t.string "email"
+    t.text "message"
+    t.string "notification_type"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "pools", force: :cascade do |t|

@@ -1,0 +1,89 @@
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header">
+        <div class="d-flex justify-content-between align-items-center">
+          <h2 class="card-title">
+            <i class="fas fa-bell"></i>
+            Notifications
+          </h2>
+          <div class="d-flex gap-3">
+            <span class="badge bg-primary fs-6">
+              <%= @notifications.count %> notification<%= 's' if @notifications.count > 1 %>
+            </span>
+            <span class="badge bg-success fs-6">
+              <%= @notifications.where(created_at: 1.day.ago..).count %> aujourd'hui
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+
+        <% if @notifications.any? %>
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>Type</th>
+                  <th>Email</th>
+                  <th>Message</th>
+                  <th>Date</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @notifications.each do |notification| %>
+                  <tr>
+                    <td>
+                      <span class="badge bg-info">
+                        <i class="fas fa-<%= notification.notification_type == 'tournament_organization' ? 'trophy' : notification.notification_type == 'general_inquiry' ? 'question-circle' : 'headset' %>"></i>
+                        <%= notification.notification_type.humanize %>
+                      </span>
+                    </td>
+                    <td>
+                      <a href="mailto:<%= notification.email %>" class="text-decoration-none">
+                        <i class="fas fa-envelope me-2"></i>
+                        <%= notification.email %>
+                      </a>
+                    </td>
+                    <td><%= notification.message %></td>
+                    <td><%= notification.formatted_created_at %></td>
+                    <td>
+                      <div class="btn-group" role="group">
+                        <%= link_to admin_notification_path(notification),
+                            class: "btn btn-outline-primary btn-sm" do %>
+                          <i class="fas fa-eye"></i>
+                        <% end %>
+                        <a href="mailto:<%= notification.email %>" class="btn btn-outline-success btn-sm">
+                          <i class="fas fa-reply"></i>
+                        </a>
+                        <%= link_to admin_notification_path(notification),
+                            method: :delete,
+                            class: "btn btn-outline-danger btn-sm",
+                            data: {
+                              confirm: "Êtes-vous sûr de vouloir supprimer cette notification ?",
+                              turbo_method: :delete
+                            } do %>
+                          <i class="fas fa-trash"></i>
+                        <% end %>
+                      </div>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        <% else %>
+          <div class="text-center py-5">
+            <i class="fas fa-bell-slash fa-3x text-muted mb-3"></i>
+            <h4 class="text-muted">Aucune notification</h4>
+            <p class="text-muted">Aucune demande de contact n'a été reçue pour le moment.</p>
+            <button class="btn btn-primary" onclick="location.reload()">
+              <i class="fas fa-refresh me-2"></i>
+              Actualiser
+            </button>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>

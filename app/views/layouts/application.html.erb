@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   </head>
 
-  <body>
+  <body class="d-flex flex-column min-vh-100">
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
       <div class="container">
@@ -89,20 +89,58 @@
     <% end %>
 
     <!-- Main Content -->
-    <main>
+    <main class="flex-grow-1">
       <%= yield %>
     </main>
 
     <!-- Footer -->
-    <footer class="bg-dark text-light py-4 mt-5">
+    <footer class="bg-dark text-light py-5 mt-auto">
       <div class="container">
         <div class="row">
-          <div class="col-md-6">
+          <div class="col-lg-4 mb-4">
             <h5><i class="fas fa-basketball-ball me-2"></i>TournamentGo</h5>
-            <p class="mb-0">Gestion de tournois de basketball moderne et intuitive.</p>
-          </div>
-          <div class="col-md-6 text-md-end">
+            <p class="mb-3">Gestion de tournois de basketball moderne et intuitive.</p>
             <p class="mb-0">&copy; <%= Date.current.year %> TournamentGo. Tous droits réservés.</p>
+          </div>
+
+          <div class="col-lg-4 mb-4">
+            <h6 class="text-warning mb-3">
+              <i class="fas fa-trophy me-2"></i>Organisez votre tournoi
+            </h6>
+            <p class="mb-3">Vous souhaitez organiser un tournoi ? Contactez-nous !</p>
+            <div class="contact-form">
+              <%= simple_form_for Notification.new, url: contact_path, method: :post, local: true, html: { class: "contact-form-wrapper" } do |form| %>
+                <div class="input-group">
+                  <%= form.input :email,
+                      placeholder: "Votre email",
+                      label: false,
+                      input_html: {
+                        class: "form-control",
+                        required: true
+                      } %>
+                  <%= form.submit "Contact",
+                      class: "btn btn-warning" %>
+                </div>
+              <% end %>
+            </div>
+          </div>
+
+          <div class="col-lg-4 mb-4">
+            <h6 class="text-warning mb-3">
+              <i class="fas fa-info-circle me-2"></i>Informations
+            </h6>
+            <ul class="list-unstyled mb-0">
+              <li class="mb-2">
+                <i class="fas fa-envelope me-2"></i>
+                <a href="mailto:tournamentgo.contact@gmail.com" class="text-light text-decoration-none">
+                  tournamentgo.contact@gmail.com
+                </a>
+              </li>
+              <li>
+                <i class="fas fa-map-marker-alt me-2"></i>
+                <span>Paris, France</span>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
