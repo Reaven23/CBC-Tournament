@@ -15,6 +15,7 @@ module SeoHelper
 
   def meta_keywords(keywords = [])
     base_keywords = ["basketball", "tournoi", "sport", "match", "classement", "TournamentGo"]
+    keywords = [] if keywords.nil?
     (base_keywords + keywords).join(", ")
   end
 
