@@ -39,7 +39,14 @@ class Pool < ApplicationRecord
     # 4. Si goal average identique : équipe qui a marqué le plus de points (meilleure attaque)
     # Note: Si goal average ET attaque sont égaux, la défense sera forcément égale aussi
 
-    teams.includes(:won_games).sort do |team_a, team_b|
+    # OPTIMISATION: Précharger toutes les données nécessaires
+    teams_with_stats = teams.includes(:won_games).map do |team|
+      # Forcer le calcul des stats pour cette équipe (utilise le cache)
+      team.pool_stats
+      team
+    end
+
+    teams_with_stats.sort do |team_a, team_b|
       # 1. Comparaison par points (déjà basés sur les matchs de poule)
       points_diff = team_b.points - team_a.points
       next points_diff unless points_diff == 0
@@ -66,5 +73,17 @@ class Pool < ApplicationRecord
       # Dans ce cas, on garde l'ordre alphabétique ou l'ordre d'insertion
       0  # Égalité parfaite
     end
+  end
+
+  # Méthode de classe optimisée pour calculer les classements de toutes les poules d'un tournoi
+  def self.standings_for_tournament(tournament)
+    pools = tournament.pools.ordered.includes(teams: [:won_games])
+    
+    standings = {}
+    pools.each do |pool|
+      standings[pool] = pool.standings
+    end
+    
+    standings
   end
 end

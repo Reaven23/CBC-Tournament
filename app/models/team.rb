@@ -64,41 +64,33 @@ class Team < ApplicationRecord
     pool_games.where(status: 'played')
   end
 
+  # MÉTHODES OPTIMISÉES - Calculent toutes les stats en une seule requête
+  def pool_stats
+    @pool_stats ||= calculate_pool_stats
+  end
+
   def pool_wins
-    pool_played_games.count { |game| game.winner_id == id }
+    pool_stats[:wins]
   end
 
   def pool_losses
-    pool_played_games.count - pool_wins
+    pool_stats[:losses]
   end
 
   def pool_points
-    # 2 points pour une victoire, 1 point pour une défaite
-    (pool_wins * 2) + (pool_losses * 1)
+    pool_stats[:points]
   end
 
   def pool_goals_scored
-    pool_played_games.sum do |game|
-      if game.home_team_id == id
-        game.home_score || 0
-      else
-        game.away_score || 0
-      end
-    end
+    pool_stats[:goals_scored]
   end
 
   def pool_goals_conceded
-    pool_played_games.sum do |game|
-      if game.home_team_id == id
-        game.away_score || 0
-      else
-        game.home_score || 0
-      end
-    end
+    pool_stats[:goals_conceded]
   end
 
   def pool_goal_difference
-    pool_goals_scored - pool_goals_conceded
+    pool_stats[:goal_difference]
   end
 
   # Méthodes pour le classement (matchs de poule uniquement)
@@ -130,5 +122,43 @@ class Team < ApplicationRecord
     defeats = direct_games.count { |game| game.winner_id == other_team.id }
 
     victories > defeats
+  end
+
+  private
+
+  def calculate_pool_stats
+    # Une seule requête pour récupérer tous les matchs de poule joués
+    games_data = pool_played_games.pluck(:home_team_id, :away_team_id, :home_score, :away_score, :winner_id)
+    
+    wins = 0
+    goals_scored = 0
+    goals_conceded = 0
+
+    games_data.each do |home_team_id, away_team_id, home_score, away_score, winner_id|
+      if home_team_id == id
+        # L'équipe était à domicile
+        goals_scored += home_score || 0
+        goals_conceded += away_score || 0
+        wins += 1 if winner_id == id
+      else
+        # L'équipe était à l'extérieur
+        goals_scored += away_score || 0
+        goals_conceded += home_score || 0
+        wins += 1 if winner_id == id
+      end
+    end
+
+    losses = games_data.length - wins
+    points = (wins * 2) + (losses * 1)
+    goal_difference = goals_scored - goals_conceded
+
+    {
+      wins: wins,
+      losses: losses,
+      points: points,
+      goals_scored: goals_scored,
+      goals_conceded: goals_conceded,
+      goal_difference: goal_difference
+    }
   end
 end

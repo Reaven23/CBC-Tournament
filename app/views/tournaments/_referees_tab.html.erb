@@ -1,0 +1,47 @@
+<% if @tournament.referees.any? %>
+  <div class="referees-section">
+    <div class="referees-header mb-4">
+      <h3 class="referees-title">
+        <i class="fas fa-whistle me-2"></i>
+        Arbitres du tournoi
+      </h3>
+      <p class="text-muted">Cliquez sur un arbitre pour voir son planning de matchs</p>
+    </div>
+
+    <div class="referees-grid">
+      <% @tournament.referees.each do |referee| %>
+        <div class="referee-card">
+          <%= link_to tournament_referee_path(@tournament, referee), class: "referee-link" do %>
+            <div class="referee-info">
+              <div class="referee-avatar">
+                <i class="fas fa-user-tie"></i>
+              </div>
+              <div class="referee-details">
+                <h4 class="referee-name"><%= referee.name %></h4>
+                <div class="referee-stats">
+                  <span class="stat-item">
+                    <i class="fas fa-basketball-ball me-1"></i>
+                    <%= referee.games.count %> match<%= 's' if referee.games.count > 1 %>
+                  </span>
+                  <span class="stat-item">
+                    <i class="fas fa-check-circle me-1"></i>
+                    <%= referee.games.where(status: 'played').count %> terminé<%= 's' if referee.games.where(status: 'played').count > 1 %>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="referee-arrow">
+              <i class="fas fa-chevron-right"></i>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+<% else %>
+  <div class="no-referees">
+    <i class="fas fa-whistle fa-3x text-muted mb-3"></i>
+    <h4 class="text-muted">Aucun arbitre assigné</h4>
+    <p class="text-muted">Les arbitres seront bientôt assignés aux matchs.</p>
+  </div>
+<% end %>
