@@ -1,0 +1,125 @@
+<div class="referee-page">
+  <div class="container-fluid px-3">
+    <!-- Header -->
+    <section class="referee-header mb-4">
+      <div class="d-flex align-items-center mb-3">
+        <%= link_to tournament_referees_path(@tournament), class: "btn btn-outline-primary me-3" do %>
+          <i class="fas fa-arrow-left me-2"></i>
+          Retour aux arbitres
+        <% end %>
+        <div class="referee-title">
+          <h1 class="page-title mb-0">
+            <i class="fas fa-user-tie me-2"></i>
+            <%= @referee.name %>
+          </h1>
+          <p class="text-muted mb-0">Arbitre - <%= @tournament.name %></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Statistics -->
+    <section class="referee-stats mb-4">
+      <div class="row">
+        <div class="col-md-3 col-sm-6 mb-3">
+          <div class="stat-card">
+            <div class="stat-icon">
+              <i class="fas fa-basketball-ball"></i>
+            </div>
+            <div class="stat-content">
+              <div class="stat-number"><%= @stats[:total_games] %></div>
+              <div class="stat-label">Total matchs</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3 col-sm-6 mb-3">
+          <div class="stat-card">
+            <div class="stat-icon">
+              <i class="fas fa-check-circle text-success"></i>
+            </div>
+            <div class="stat-content">
+              <div class="stat-number"><%= @stats[:completed_games] %></div>
+              <div class="stat-label">Terminés</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3 col-sm-6 mb-3">
+          <div class="stat-card">
+            <div class="stat-icon">
+              <i class="fas fa-clock text-warning"></i>
+            </div>
+            <div class="stat-content">
+              <div class="stat-number"><%= @stats[:upcoming_games] %></div>
+              <div class="stat-label">À venir</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3 col-sm-6 mb-3">
+          <div class="stat-card">
+            <div class="stat-icon">
+              <i class="fas fa-layer-group text-info"></i>
+            </div>
+            <div class="stat-content">
+              <div class="stat-number"><%= @stats[:pool_games] %></div>
+              <div class="stat-label">Matchs de poule</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Games Schedule -->
+    <section class="referee-schedule">
+      <div class="schedule-header mb-4">
+        <h3 class="schedule-title">
+          <i class="fas fa-calendar-alt me-2"></i>
+          Planning des matchs
+        </h3>
+      </div>
+
+      <% if @games.any? %>
+        <!-- Pool Games -->
+        <% if @pool_games.any? %>
+          <div class="games-section mb-4">
+            <h4 class="games-section-title">
+              <i class="fas fa-layer-group me-2"></i>
+              Matchs de poule
+            </h4>
+            <div class="games-list">
+              <% @pool_games.each do |game| %>
+                <%= render 'tournaments/game_card', game: game, game_type_label: 'Match de poule' %>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+
+        <!-- Knockout Games -->
+        <% if @knockout_games.any? %>
+          <div class="games-section mb-4">
+            <h4 class="games-section-title">
+              <i class="fas fa-trophy me-2"></i>
+              Phase finale
+            </h4>
+            <div class="games-list">
+              <% @knockout_games.each do |game| %>
+                <% game_type_label = case game.game_type
+                                   when 'quarter' then 'Quart de finale'
+                                   when 'semi' then 'Demi-finale'
+                                   when 'final' then 'Finale'
+                                   when 'third_place' then 'Petite finale'
+                                   else game.game_type.humanize
+                                   end %>
+                <%= render 'tournaments/game_card', game: game, game_type_label: game_type_label %>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      <% else %>
+        <div class="no-games text-center py-5">
+          <i class="fas fa-basketball-ball fa-3x text-muted mb-3"></i>
+          <h4 class="text-muted">Aucun match assigné</h4>
+          <p class="text-muted">Cet arbitre n'a pas encore de matchs assignés.</p>
+        </div>
+      <% end %>
+    </section>
+  </div>
+</div>

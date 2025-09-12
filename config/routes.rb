@@ -36,6 +36,7 @@ Rails.application.routes.draw do
   resources :tournaments, only: [:index, :show] do
     resources :games, only: [:show]
     resources :teams, only: [:show]
+    resources :referees, only: [:index, :show]
   end
 
   # Contact form
