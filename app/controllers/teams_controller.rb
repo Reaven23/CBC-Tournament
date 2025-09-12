@@ -6,7 +6,7 @@ class TeamsController < ApplicationController
     # Récupérer tous les matchs de l'équipe
     @games = @team.games
                   .includes(:home_team, :away_team, :winner, :referees, :pool)
-                  .order(:game_type, :round_number)
+                  .order(:game_type, :game_start, :round_number)
 
     # Séparer les matchs par type
     @pool_games = @games.where(game_type: 'pool')

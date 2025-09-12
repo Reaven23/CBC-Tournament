@@ -11,7 +11,7 @@ class Admin::DashboardController < Admin::BaseController
     @recent_games = if tournament_ids.any?
                       Game.includes(:tournament, :home_team, :away_team)
                           .where(tournament_id: tournament_ids)
-                          .order(updated_at: :desc)
+                          .order(:game_start, :updated_at)
                           .limit(5)
                     else
                       Game.none
