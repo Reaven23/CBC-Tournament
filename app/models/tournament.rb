@@ -137,6 +137,31 @@ class Tournament < ApplicationRecord
     third_places.first(2)
   end
 
+  def qualified_teams_for_quarters
+    qualified_teams = []
+
+    # Récupérer les 2 premiers de chaque poule
+    pools.ordered.each do |pool|
+      standings = pool.standings
+      qualified_teams << standings[0] if standings[0] # 1er
+      qualified_teams << standings[1] if standings[1] # 2ème
+    end
+
+    # Récupérer les 2 meilleurs troisièmes
+    best_third_places = get_best_third_places
+    qualified_teams.concat(best_third_places)
+
+    qualified_teams
+  end
+
+  def is_team_qualified?(team)
+    qualified_teams_for_quarters.include?(team)
+  end
+
+  def is_team_best_third?(team)
+    get_best_third_places.include?(team)
+  end
+
   def create_quarter_final_games(qualified_teams)
     # Créer les matchs de quarts de finale en évitant que deux équipes de la même poule se rencontrent
     quarter_games = []

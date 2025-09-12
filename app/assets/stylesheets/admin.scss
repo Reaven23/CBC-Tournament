@@ -922,3 +922,17 @@
     justify-content: center;
   }
 }
+
+// Qualification badges for pool standings
+.qualification-badge {
+  font-size: 0.9rem;
+
+  i {
+    font-size: 1rem;
+  }
+}
+
+.qualified {
+  background-color: rgba(40, 167, 69, 0.1) !important;
+  border-left: 3px solid var(--bs-success) !important;
+}
