@@ -78,12 +78,12 @@ class Pool < ApplicationRecord
   # Méthode de classe optimisée pour calculer les classements de toutes les poules d'un tournoi
   def self.standings_for_tournament(tournament)
     pools = tournament.pools.ordered.includes(teams: [:won_games])
-    
+
     standings = {}
     pools.each do |pool|
       standings[pool] = pool.standings
     end
-    
+
     standings
   end
 end

@@ -8,7 +8,7 @@
           Retour au tournoi
         <% end %>
         <h1 class="page-title mb-0">
-          <i class="fas fa-whistle me-2"></i>
+          <i class="fas fa-gavel me-2 text-primary"></i>
           Arbitres - <%= @tournament.name %>
         </h1>
       </div>
@@ -25,7 +25,7 @@
                 <%= link_to tournament_referee_path(@tournament, referee), class: "referee-link" do %>
                   <div class="referee-info">
                     <div class="referee-avatar">
-                      <i class="fas fa-user-tie"></i>
+                      <i class="fas fa-gavel"></i>
                     </div>
                     <div class="referee-details">
                       <h4 class="referee-name"><%= referee.name %></h4>
@@ -60,7 +60,7 @@
       </section>
     <% else %>
       <div class="no-referees text-center py-5">
-        <i class="fas fa-whistle fa-3x text-muted mb-3"></i>
+        <i class="fas fa-gavel fa-3x text-muted mb-3"></i>
         <h4 class="text-muted">Aucun arbitre assigné</h4>
         <p class="text-muted">Les arbitres seront bientôt assignés aux matchs.</p>
       </div>

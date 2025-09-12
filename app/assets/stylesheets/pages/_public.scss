@@ -1432,8 +1432,16 @@ footer {
 
   .referees-title {
     color: var(--bs-primary);
-    font-weight: 600;
+    font-weight: 700;
     margin-bottom: 0.5rem;
+    font-size: 1.3rem;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+
+    .fa-whistle {
+      color: var(--bs-primary);
+      animation: whistle-bounce 2s ease-in-out infinite;
+      font-size: 1.2em;
+    }
   }
 }
 
@@ -1449,10 +1457,12 @@ footer {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
   overflow: hidden;
+  border: 2px solid transparent;
 
   &:hover {
-    transform: translateY(-2px);
+    transform: translateY(-3px);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    border-color: var(--bs-primary);
   }
 
   .referee-link {
@@ -1476,8 +1486,8 @@ footer {
   }
 
   .referee-avatar {
-    width: 60px;
-    height: 60px;
+    width: 65px;
+    height: 65px;
     background: linear-gradient(135deg, var(--bs-primary), var(--bs-info));
     border-radius: 50%;
     display: flex;
@@ -1485,32 +1495,44 @@ footer {
     justify-content: center;
     margin-right: 1rem;
     color: white;
-    font-size: 1.5rem;
+    font-size: 1.8rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+
+    .fa-whistle {
+      transform: rotate(-15deg);
+      animation: whistle-bounce 2s ease-in-out infinite;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+    }
   }
 
   .referee-details {
     flex: 1;
 
     .referee-name {
-      font-size: 1.1rem;
-      font-weight: 600;
+      font-size: 1.2rem;
+      font-weight: 700;
       margin-bottom: 0.5rem;
       color: var(--bs-dark);
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+      line-height: 1.3;
+      letter-spacing: 0.5px;
     }
 
     .referee-stats {
       display: flex;
       flex-direction: column;
-      gap: 0.25rem;
+      gap: 0.3rem;
 
       .stat-item {
-        font-size: 0.85rem;
-        color: var(--bs-secondary);
+        font-size: 0.9rem;
+        color: var(--bs-dark);
         display: flex;
         align-items: center;
+        font-weight: 500;
 
         i {
-          width: 16px;
+          width: 18px;
+          color: var(--bs-primary);
         }
       }
     }
@@ -1528,6 +1550,11 @@ footer {
   .referee-header {
     .referee-title {
       flex: 1;
+
+      .fa-whistle {
+        color: var(--bs-primary);
+        animation: whistle-bounce 2s ease-in-out infinite;
+      }
     }
   }
 
@@ -1619,6 +1646,51 @@ footer {
   p {
     color: var(--bs-muted);
     margin-bottom: 0;
+  }
+}
+
+// Animation du sifflet
+@keyframes whistle-bounce {
+  0%, 100% {
+    transform: rotate(-15deg) translateY(0) scale(1);
+  }
+  50% {
+    transform: rotate(-15deg) translateY(-4px) scale(1.05);
+  }
+}
+
+// Amélioration des titres de pages arbitres
+.referees-page {
+  .page-title {
+    .fa-whistle {
+      color: var(--bs-primary);
+      animation: whistle-bounce 2s ease-in-out infinite;
+    }
+  }
+}
+
+// Amélioration des titres de pages
+.page-title {
+  font-weight: 700;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  line-height: 1.2;
+  color: var(--bs-dark);
+
+  .fa-whistle {
+    color: var(--bs-primary);
+    animation: whistle-bounce 2s ease-in-out infinite;
+    font-size: 1.1em;
+  }
+}
+
+// Amélioration des titres d'arbitres
+.referee-title {
+  .page-title {
+    font-weight: 700;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    line-height: 1.2;
+    font-size: 1.4rem;
+    color: var(--bs-dark);
   }
 }
 

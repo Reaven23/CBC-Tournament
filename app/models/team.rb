@@ -129,7 +129,7 @@ class Team < ApplicationRecord
   def calculate_pool_stats
     # Une seule requête pour récupérer tous les matchs de poule joués
     games_data = pool_played_games.pluck(:home_team_id, :away_team_id, :home_score, :away_score, :winner_id)
-    
+
     wins = 0
     goals_scored = 0
     goals_conceded = 0
