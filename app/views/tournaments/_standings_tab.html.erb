@@ -20,8 +20,19 @@
         </div>
 
         <% standings.each_with_index do |team, index| %>
-          <div class="standings-row">
-            <div class="pos"><%= index + 1 %></div>
+          <div class="standings-row <%= 'qualified' if @tournament.pool_games.all?(&:played?) && @tournament.is_team_qualified?(team) %>">
+            <div class="pos">
+              <%= index + 1 %>
+              <% if @tournament.pool_games.all?(&:played?) && @tournament.is_team_qualified?(team) %>
+                <span class="qualification-badge">
+                  <% if index < 2 %>
+                    <i class="fas fa-check-circle text-success" title="Qualifié (top 2)"></i>
+                  <% elsif index == 2 && @tournament.is_team_best_third?(team) %>
+                    <i class="fas fa-star text-warning" title="Qualifié (meilleur 3ème)"></i>
+                  <% end %>
+                </span>
+              <% end %>
+            </div>
             <div class="team">
               <%= link_to tournament_team_path(@tournament, team), class: "team-link", title: team.name do %>
                 <div class="team-logo">

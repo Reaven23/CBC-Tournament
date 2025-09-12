@@ -432,6 +432,23 @@
       font-weight: 600;
       color: #495057;
       font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.3rem;
+    }
+
+    &.qualified {
+      background-color: rgba(40, 167, 69, 0.1);
+      border-left: 3px solid var(--bs-success);
+    }
+
+    .qualification-badge {
+      font-size: 0.9rem;
+
+      i {
+        font-size: 1rem;
+      }
     }
 
     .team {
