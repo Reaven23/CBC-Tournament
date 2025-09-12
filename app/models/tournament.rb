@@ -28,6 +28,10 @@ class Tournament < ApplicationRecord
     games.where(game_type: 'pool')
   end
 
+  def all_pool_games_played?
+    pool_games.all?(&:played?)
+  end
+
   def knockout_games
     games.where(game_type: %w[quarter semi final third_place])
   end
@@ -103,14 +107,19 @@ class Tournament < ApplicationRecord
       qualified_teams << standings[1] if standings[1] # 2ème
     end
 
-    # Récupérer les 2 meilleurs troisièmes
-    best_third_places = get_best_third_places
-    qualified_teams.concat(best_third_places)
+    # Récupérer les 2 meilleurs troisièmes seulement si tous les matchs de poules sont joués
+    if all_pool_games_played?
+      best_third_places = get_best_third_places
+      qualified_teams.concat(best_third_places)
+    end
 
     qualified_teams
   end
 
   def get_best_third_places
+    # Ne calculer que si tous les matchs de poules sont joués
+    return [] unless all_pool_games_played?
+
     third_places = []
 
     # Récupérer les 3èmes de chaque poule
@@ -119,22 +128,35 @@ class Tournament < ApplicationRecord
       third_places << standings[2] if standings[2] # 3ème
     end
 
+    puts "\n🔍 DEBUG - Meilleurs troisièmes:"
+    third_places.each_with_index do |team, index|
+      puts "  Équipe #{index + 1}: #{team.name}"
+      puts "    Victoires: #{team.pool_wins}"
+      puts "    Goal difference: #{team.pool_goal_difference}"
+      puts "    Goals scored: #{team.pool_goals_scored}"
+    end
+
     # Trier selon les règles : victoires → goal average → points marqués
-    third_places.sort do |team_a, team_b|
-      # 1. Nombre de victoires
-      wins_diff = team_b.wins - team_a.wins
+    sorted_third_places = third_places.sort do |team_a, team_b|
+      # 1. Nombre de victoires (points = victoires)
+      wins_diff = team_b.pool_wins - team_a.pool_wins
       next wins_diff unless wins_diff == 0
 
-      # 2. Goal average
-      goal_diff = team_b.goal_difference - team_a.goal_difference
+      # 2. Goal average (différence de paniers marqués et encaissés)
+      goal_diff = team_b.pool_goal_difference - team_a.pool_goal_difference
       next goal_diff unless goal_diff == 0
 
       # 3. Points marqués
-      team_b.goals_scored - team_a.goals_scored
+      team_b.pool_goals_scored - team_a.pool_goals_scored
+    end
+
+    puts "\n📊 Classement final des 3èmes:"
+    sorted_third_places.each_with_index do |team, index|
+      puts "  #{index + 1}. #{team.name} (#{team.pool_wins}v, #{team.pool_goal_difference}+/-, #{team.pool_goals_scored}pts)"
     end
 
     # Retourner les 2 meilleurs
-    third_places.first(2)
+    sorted_third_places.first(2)
   end
 
   def qualified_teams_for_quarters
@@ -159,6 +181,9 @@ class Tournament < ApplicationRecord
   end
 
   def is_team_best_third?(team)
+    # Ne calculer les meilleurs troisièmes que si tous les matchs de poules sont joués
+    return false unless all_pool_games_played?
+
     get_best_third_places.include?(team)
   end
 

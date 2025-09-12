@@ -5,7 +5,8 @@
 puts "🌱 Début du seeding..."
 
 # Nettoyer les données existantes
-
+Tournament.last.destroy
+User.last.destroy
 
 
 # Créer un utilisateur admin
@@ -90,43 +91,205 @@ referees = []
   referees << referee
 end
 
-# Générer tous les matchs de poules
-puts "⚽ Génération des matchs de poules..."
-pools.each do |pool|
+# Générer des matchs de poules avec des scénarios de test spécifiques
+puts "⚽ Génération des matchs de poules avec scénarios de test..."
+
+pools.each_with_index do |pool, pool_index|
   pool_teams = pool.teams.to_a
+  puts "   📋 #{pool.name}: #{pool_teams.map(&:name).join(', ')}"
 
-  # Générer tous les matchs possibles dans la poule (chaque équipe joue contre chaque autre)
-  pool_teams.combination(2).each_with_index do |(team1, team2), index|
-    # Déterminer l'équipe à domicile et à l'extérieur
-    home_team = [team1, team2].sample
-    away_team = (home_team == team1) ? team2 : team1
+  case pool_index
+  when 0
+    # POULE A : Test confrontation directe (2 équipes à égalité 2-1 et 1-2)
+    puts "     🎯 Scénario: 2 équipes à égalité (confrontation directe)"
+    # Équipe 1: 2 victoires, 1 défaite
+    # Équipe 2: 2 victoires, 1 défaite (mais perd contre équipe 1)
+    # Équipe 3: 1 victoire, 2 défaites
+    # Équipe 4: 1 victoire, 2 défaites
 
-    # Générer des scores aléatoires (entre 40 et 120 points)
-    home_score = rand(40..120)
-    away_score = rand(40..120)
-
-    # Déterminer le gagnant
-    winner = home_score > away_score ? home_team : away_team
-
-    # Créer le match
-    game = Game.create!(
-      tournament: tournament,
-      pool: pool,
-      home_team: home_team,
-      away_team: away_team,
-      home_score: home_score,
-      away_score: away_score,
-      winner: winner,
-      game_type: "pool",
-      status: "played",
-      round_number: (index / 2) + 1,
-      game_start: tournament.start_date + rand(0..2).days + rand(9..18).hours,
-      court_number: rand(1..3)
+    # Match 1: Équipe 1 bat Équipe 2 (confrontation directe - Équipe 1 doit être devant)
+    Game.create!(
+      tournament: tournament, pool: pool,
+      home_team: pool_teams[0], away_team: pool_teams[1],
+      home_score: 85, away_score: 75, winner: pool_teams[0],
+      game_type: "pool", status: "played", round_number: 1,
+      game_start: tournament.start_date + 9.hours, court_number: 1
     )
 
-    # Assigner les arbitres au match
+    # Match 2: Équipe 1 bat Équipe 3
+    Game.create!(
+      tournament: tournament, pool: pool,
+      home_team: pool_teams[0], away_team: pool_teams[2],
+      home_score: 90, away_score: 80, winner: pool_teams[0],
+      game_type: "pool", status: "played", round_number: 1,
+      game_start: tournament.start_date + 11.hours, court_number: 1
+    )
+
+    # Match 3: Équipe 2 bat Équipe 3
+    Game.create!(
+      tournament: tournament, pool: pool,
+      home_team: pool_teams[1], away_team: pool_teams[2],
+      home_score: 88, away_score: 82, winner: pool_teams[1],
+      game_type: "pool", status: "played", round_number: 1,
+      game_start: tournament.start_date + 13.hours, court_number: 1
+    )
+
+    # Match 4: Équipe 2 bat Équipe 4
+    Game.create!(
+      tournament: tournament, pool: pool,
+      home_team: pool_teams[1], away_team: pool_teams[3],
+      home_score: 92, away_score: 78, winner: pool_teams[1],
+      game_type: "pool", status: "played", round_number: 2,
+      game_start: tournament.start_date + 1.day + 9.hours, court_number: 1
+    )
+
+    # Match 5: Équipe 3 bat Équipe 4
+    Game.create!(
+      tournament: tournament, pool: pool,
+      home_team: pool_teams[2], away_team: pool_teams[3],
+      home_score: 86, away_score: 84, winner: pool_teams[2],
+      game_type: "pool", status: "played", round_number: 2,
+      game_start: tournament.start_date + 1.day + 11.hours, court_number: 1
+    )
+
+    # Match 6: Équipe 1 perd contre Équipe 4 (pour équilibrer)
+    Game.create!(
+      tournament: tournament, pool: pool,
+      home_team: pool_teams[0], away_team: pool_teams[3],
+      home_score: 75, away_score: 85, winner: pool_teams[3],
+      game_type: "pool", status: "played", round_number: 2,
+      game_start: tournament.start_date + 1.day + 13.hours, court_number: 1
+    )
+
+  when 1
+    # POULE B : Test classement normal (3v, 2v, 1v, 0v)
+    puts "     🎯 Scénario: Classement normal (3v, 2v, 1v, 0v)"
+    # Équipe 1: 3 victoires (1ère)
+    # Équipe 2: 2 victoires (2ème)
+    # Équipe 3: 1 victoire (3ème)
+    # Équipe 4: 0 victoire (4ème)
+
+    # Match 1: Équipe 1 bat Équipe 2
+    Game.create!(
+      tournament: tournament, pool: pool,
+      home_team: pool_teams[0], away_team: pool_teams[1],
+      home_score: 95, away_score: 85, winner: pool_teams[0],
+      game_type: "pool", status: "played", round_number: 1,
+      game_start: tournament.start_date + 9.hours, court_number: 2
+    )
+
+    # Match 2: Équipe 1 bat Équipe 3
+    Game.create!(
+      tournament: tournament, pool: pool,
+      home_team: pool_teams[0], away_team: pool_teams[2],
+      home_score: 90, away_score: 80, winner: pool_teams[0],
+      game_type: "pool", status: "played", round_number: 1,
+      game_start: tournament.start_date + 11.hours, court_number: 2
+    )
+
+    # Match 3: Équipe 1 bat Équipe 4
+    Game.create!(
+      tournament: tournament, pool: pool,
+      home_team: pool_teams[0], away_team: pool_teams[3],
+      home_score: 100, away_score: 70, winner: pool_teams[0],
+      game_type: "pool", status: "played", round_number: 1,
+      game_start: tournament.start_date + 13.hours, court_number: 2
+    )
+
+    # Match 4: Équipe 2 bat Équipe 3
+    Game.create!(
+      tournament: tournament, pool: pool,
+      home_team: pool_teams[1], away_team: pool_teams[2],
+      home_score: 88, away_score: 82, winner: pool_teams[1],
+      game_type: "pool", status: "played", round_number: 2,
+      game_start: tournament.start_date + 1.day + 9.hours, court_number: 2
+    )
+
+    # Match 5: Équipe 2 bat Équipe 4
+    Game.create!(
+      tournament: tournament, pool: pool,
+      home_team: pool_teams[1], away_team: pool_teams[3],
+      home_score: 92, away_score: 78, winner: pool_teams[1],
+      game_type: "pool", status: "played", round_number: 2,
+      game_start: tournament.start_date + 1.day + 11.hours, court_number: 2
+    )
+
+    # Match 6: Équipe 3 bat Équipe 4
+    Game.create!(
+      tournament: tournament, pool: pool,
+      home_team: pool_teams[2], away_team: pool_teams[3],
+      home_score: 86, away_score: 84, winner: pool_teams[2],
+      game_type: "pool", status: "played", round_number: 2,
+      game_start: tournament.start_date + 1.day + 13.hours, court_number: 2
+    )
+
+  when 2
+    # POULE C : Test goal average (1 équipe à 3v, 3 équipes à 1v)
+    puts "     🎯 Scénario: Goal average (3v, 1v, 1v, 1v)"
+    # Équipe 1: 3 victoires (1ère)
+    # Équipe 2: 1 victoire (2ème par goal average)
+    # Équipe 3: 1 victoire (3ème par goal average)
+    # Équipe 4: 1 victoire (4ème par goal average)
+
+    # Match 1: Équipe 1 bat Équipe 2 (gros écart)
+    Game.create!(
+      tournament: tournament, pool: pool,
+      home_team: pool_teams[0], away_team: pool_teams[1],
+      home_score: 100, away_score: 70, winner: pool_teams[0],
+      game_type: "pool", status: "played", round_number: 1,
+      game_start: tournament.start_date + 9.hours, court_number: 3
+    )
+
+    # Match 2: Équipe 1 bat Équipe 3 (moyen écart)
+    Game.create!(
+      tournament: tournament, pool: pool,
+      home_team: pool_teams[0], away_team: pool_teams[2],
+      home_score: 90, away_score: 75, winner: pool_teams[0],
+      game_type: "pool", status: "played", round_number: 1,
+      game_start: tournament.start_date + 11.hours, court_number: 3
+    )
+
+    # Match 3: Équipe 1 bat Équipe 4 (petit écart)
+    Game.create!(
+      tournament: tournament, pool: pool,
+      home_team: pool_teams[0], away_team: pool_teams[3],
+      home_score: 85, away_score: 80, winner: pool_teams[0],
+      game_type: "pool", status: "played", round_number: 1,
+      game_start: tournament.start_date + 13.hours, court_number: 3
+    )
+
+    # Match 4: Équipe 2 bat Équipe 3 (gros écart - Équipe 2 meilleur goal average)
+    Game.create!(
+      tournament: tournament, pool: pool,
+      home_team: pool_teams[1], away_team: pool_teams[2],
+      home_score: 95, away_score: 75, winner: pool_teams[1],
+      game_type: "pool", status: "played", round_number: 2,
+      game_start: tournament.start_date + 1.day + 9.hours, court_number: 3
+    )
+
+    # Match 5: Équipe 3 bat Équipe 4 (moyen écart - Équipe 3 2ème meilleur goal average)
+    Game.create!(
+      tournament: tournament, pool: pool,
+      home_team: pool_teams[2], away_team: pool_teams[3],
+      home_score: 90, away_score: 80, winner: pool_teams[2],
+      game_type: "pool", status: "played", round_number: 2,
+      game_start: tournament.start_date + 1.day + 11.hours, court_number: 3
+    )
+
+    # Match 6: Équipe 4 bat Équipe 2 (petit écart - Équipe 4 3ème goal average)
+    Game.create!(
+      tournament: tournament, pool: pool,
+      home_team: pool_teams[3], away_team: pool_teams[1],
+      home_score: 89, away_score: 85, winner: pool_teams[3],
+      game_type: "pool", status: "played", round_number: 2,
+      game_start: tournament.start_date + 1.day + 13.hours, court_number: 3
+    )
+  end
+
+  # Assigner les arbitres à tous les matchs de la poule
+  pool.games.each do |game|
     GameReferee.create!(game: game, referee: referees.sample, role: 'referee')
-    GameReferee.create!(game: game, referee: referees.sample, role: 'assistant') if rand < 0.3 # 30% de chance d'avoir 2 arbitres
+    GameReferee.create!(game: game, referee: referees.sample, role: 'assistant') if rand < 0.3
   end
 end
 
@@ -146,6 +309,8 @@ pools.each do |pool|
   puts "\n   #{pool.name}:"
   standings = pool.standings
   standings.each_with_index do |team, index|
+    # Forcer le calcul des stats pour cette équipe
+    team.pool_stats
     puts "     #{index + 1}. #{team.name} - #{team.points}pts (#{team.wins}V-#{team.losses}D) - Diff: #{team.goal_difference}"
   end
 end

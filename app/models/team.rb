@@ -131,6 +131,7 @@ class Team < ApplicationRecord
     games_data = pool_played_games.pluck(:home_team_id, :away_team_id, :home_score, :away_score, :winner_id)
 
     wins = 0
+    losses = 0
     goals_scored = 0
     goals_conceded = 0
 
@@ -139,17 +140,27 @@ class Team < ApplicationRecord
         # L'équipe était à domicile
         goals_scored += home_score || 0
         goals_conceded += away_score || 0
-        wins += 1 if winner_id == id
+
+        if winner_id == id
+          wins += 1
+        else
+          losses += 1
+        end
       else
         # L'équipe était à l'extérieur
         goals_scored += away_score || 0
         goals_conceded += home_score || 0
-        wins += 1 if winner_id == id
+
+        if winner_id == id
+          wins += 1
+        else
+          losses += 1
+        end
       end
     end
 
-    losses = games_data.length - wins
-    points = (wins * 2) + (losses * 1)
+    # Dans le basketball, les points = nombre de victoires (pas de système de points)
+    points = wins
     goal_difference = goals_scored - goals_conceded
 
     {
