@@ -27,11 +27,8 @@ class TournamentsController < ApplicationController
     # Grouper les matchs de poule par poule
     @games_by_pool = @pool_games.group_by(&:pool)
 
-    # Calculer les classements pour chaque poule
-    @pool_standings = {}
-    @pools.each do |pool|
-      @pool_standings[pool] = pool.standings
-    end
+    # OPTIMISATION: Utiliser la méthode optimisée pour calculer les classements
+    @pool_standings = Pool.standings_for_tournament(@tournament)
 
     # SEO pour la page du tournoi
     @page_title = @tournament.name
