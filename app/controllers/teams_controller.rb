@@ -29,7 +29,7 @@ class TeamsController < ApplicationController
     @meta_keywords = [@team.name, @tournament.name, "équipe", "basketball", "statistiques", "matchs", "victoires", "défaites"]
     @og_title = "#{@team.name} - #{@tournament.name} | TournamentGo"
     @og_description = "Découvrez l'équipe #{@team.name} du tournoi #{@tournament.name}. Statistiques, matchs et résultats en temps réel."
-    @canonical_url = team_url(@team)
+    @canonical_url = tournament_team_url(@tournament, @team)
     @structured_data = team_json_ld(@team, @tournament)
   end
 end

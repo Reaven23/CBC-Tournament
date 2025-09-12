@@ -34,7 +34,7 @@ module StructuredDataHelper
         "name": tournament.name,
         "url": tournament_url(tournament)
       },
-      "url": team_url(team)
+      "url": tournament_team_url(tournament, team)
     }.to_json.html_safe
   end
 
