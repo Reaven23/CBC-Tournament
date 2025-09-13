@@ -159,12 +159,12 @@
                 </div>
 
                 <div class="game-teams">
-                  <div class="team team-home <%= 'winner' if game.winner == game.home_team %>">
+                  <div class="team team-home <%= 'winner' if game.played? && game.home_score.present? && game.away_score.present? && game.winner == game.home_team %>">
                     <div class="team-name"><%= game.home_team.name %></div>
                     <div class="team-score"><%= game.home_score || '-' %></div>
                   </div>
                   <div class="vs">VS</div>
-                  <div class="team team-away <%= 'winner' if game.winner == game.away_team %>">
+                  <div class="team team-away <%= 'winner' if game.played? && game.home_score.present? && game.away_score.present? && game.winner == game.away_team %>">
                     <div class="team-name"><%= game.away_team.name %></div>
                     <div class="team-score"><%= game.away_score || '-' %></div>
                   </div>
