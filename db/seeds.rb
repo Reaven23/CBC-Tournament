@@ -5,8 +5,13 @@
 puts "🌱 Début du seeding..."
 
 # Nettoyer les données existantes
-Tournament.last.destroy
-User.last.destroy
+if Tournament.last
+  Tournament.last.destroy
+end
+
+if User.last
+  User.last.destroy
+end
 
 
 # Créer un utilisateur admin
